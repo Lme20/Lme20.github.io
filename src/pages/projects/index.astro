@@ -1,0 +1,104 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const content = (await getCollection("projects")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// Group by category, then by year within each
+const group = new Map<string, Map<number, typeof content>>();
+for (const project of content) {
+  const category = project.data.category;
+  const year = project.data.date.getFullYear();
+
+  if (!group.has(category)) group.set(category, new Map());
+  const years = group.get(category)!;
+  if (!years.has(year)) years.set(year, []);
+  years.get(year)!.push(project);
+}
+
+const order = ["software", "design"];
+---
+
+<Base title="Projects" description="Things I've built">
+  <h1>~/projects</h1>
+  <br />
+
+  {
+    order.map((category) => {
+      const years = group.get(category);
+      if (!years) return null;
+
+      return (
+        <>
+          <div class="separator">
+            <span class="label">{category}</span>
+            <span class="line">{"❯".repeat(100)}</span>
+          </div>
+
+          {[...years.entries()].map(([year, projects]) => (
+            <>
+              <p class="label">~{year}</p>
+              <div class="grid-projects">
+                {projects.map((project) => (
+                  <div class="entry">
+                    <a href={`/projects/${project.id}`} class="entry-title">
+                      &gt; {project.data.title}
+                    </a>
+                    <p>{project.data.description}</p>
+
+                    {project.data.thumbnail && (
+                      <img
+                        class="entry-thumbnail"
+                        src={project.data.thumbnail}
+                        alt={project.data.title}
+                        loading="lazy"
+                      />
+                    )}
+
+                    <span class="entry-meta">
+                      {project.data.tags.map((tag) => (
+                        <span class="tag">{tag} </span>
+                      ))}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ))}
+        </>
+      );
+    })
+  }
+
+  {content.length === 0 && <p>No projects yet.</p>}
+</Base>
+
+<style>
+  .separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .label {
+    color: #ccc;
+    white-space: nowrap;
+  }
+
+  .line {
+    color: #ccc;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .grid-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+</style>

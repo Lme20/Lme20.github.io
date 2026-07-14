@@ -1,0 +1,197 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="CV" description="My resume">
+  <div class="cv-header">
+    <h1>~/cv</h1>
+    <a href="/cv.pdf">[download as PDF]</a>
+  </div>
+  <section>
+    <h2>## Education</h2>
+    <hr />
+    <div class="grid-container">
+      <div>
+        <h3>University of Gothenburg</h3>
+        <p>M.Sc. Game Design & Technology</p>
+      </div>
+      <div>
+        <p><i>Aug. 2024 – Jun. 2026</i></p>
+      </div>
+    </div>
+
+    <div class="grid-container">
+      <div>
+        <h3>University of Gothenburg</h3>
+        <p>B.Sc. Software Engineering & Management</p>
+      </div>
+      <div>
+        <p><i>Aug. 2020 – Jun. 2024</i></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>## Experience</h2>
+    <hr />
+    <div class="grid-container">
+      <div>
+        <h3>
+          <a href="https://skipgu.org" target="_blank" rel="noopener"
+            >SKIP - Student Association</a
+          >
+        </h3>
+        <h4>Board Member</h4>
+      </div>
+      <div>
+        <p><i>May 2023 – May 2025</i></p>
+      </div>
+      <p>
+        Served on the board of SKIP, creating promotional content, posters and
+        organizing extracurricular activities for computer science and software
+        engineering students.
+      </p>
+    </div>
+
+    <div class="grid-container">
+      <div>
+        <h3>
+          <a href="https://www.ctk.se" target="_blank" rel="noopener"
+            >Chalmers Teknologkonsulter AB (CTK)</a
+          >
+        </h3>
+        <h4>IT Consultant – Software Development</h4>
+      </div>
+      <div>
+        <p><i>Oct. 2022 – Feb. 2024</i></p>
+      </div>
+    </div>
+
+    <div class="sub-entry">
+      <h5>Regionala Cancercentrum – Melanoma Prognosis App</h5>
+      <p>
+        Collaborated in a team of three to implement and deploy a melanoma
+        prognosis application. Developed and integrated UI components according
+        to design specifications.
+      </p>
+      <p class="entry-meta">React Native, Vercel, JavaScript</p>
+    </div>
+
+    <div class="sub-entry">
+      <h5>AB Fastex Fästteknik – FastEx App</h5>
+      <p>
+        Improved functionality in their existing application, focusing on
+        resolving issues in the item database.
+      </p>
+      <p class="entry-meta">JavaScript, React, Docker</p>
+    </div>
+
+    <div class="sub-entry">
+      <h5>Chalmers Studentkår – Website Redesign</h5>
+      <p>
+        Implemented the redesign of the website's frontend and ensured full
+        compatibility with the existing Django backend.
+      </p>
+      <p class="entry-meta">TypeScript, AngularJS, HTML5, SCSS, REST API</p>
+    </div>
+
+    <div class="grid-container">
+      <div>
+        <h3>University of Gothenburg</h3>
+        <h4>Teaching Assistant</h4>
+      </div>
+      <div>
+        <p><i>Oct. 2022 – Jun. 2023</i></p>
+      </div>
+    </div>
+
+    <div class="sub-entry">
+      <h5>DIT348 – Software Development Methodologies</h5>
+      <p>
+        Assisted students with understanding stakeholder-product-process
+        relationships, Agile-related tools, team-based development, and the use
+        of KPIs.
+      </p>
+      <p class="entry-meta">Agile Methodologies, KPI</p>
+    </div>
+
+    <div class="sub-entry">
+      <h5>DAT257 – Agile Software Project Management</h5>
+      <p>
+        Supported teaching and student projects on software process
+        fundamentals, agile/traditional practices, and software process
+        improvement techniques. Guided individual groups on implementing Agile
+        practices effectively.
+      </p>
+      <p class="entry-meta">JavaScript, React, Docker</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>## Projects</h2>
+    <hr />
+    <div class="entry">
+      <h3>
+        <a href="https://github.com/fractal-engine/FractalEngine"
+          >Custom Game Engine</a
+        >
+      </h3>
+      <p>
+        Developed a 3D game engine that leverages procedural content generation
+        (PCG) for rapid prototyping. Project made with BGFX, SDL2, ImGui,
+        LibNoise2, FastNoise2.
+      </p>
+      <p class="entry-meta">C++, BGFX, SDL2, ImGui, LibNoise2, FastNoise2</p>
+    </div>
+
+    <div class="entry">
+      <h3>
+        <a href="https://github.com/Lme20/openscenario-osint-generator"
+          >LLM AD/ADAS Test Scenario Generation</a
+        >
+      </h3>
+      <p>
+        Built a prototype for my Bachelor's thesis project using Python, web
+        scraping and LLMs (Ollama & ChatGPT) to generate realistic test
+        scenarios for autonomous driving systems AD/ADAS using the ASAM
+        OpenSCENARIO standard.
+      </p>
+      <p class="entry-meta">Python, Web Scraping, LLMs, ASAM OpenSCENARIO</p>
+    </div>
+
+    <div class="entry">
+      <h3><a href="https://github.com/Lme20/gitro">Gitro Asset Manager</a></h3>
+      <p>
+        Git-based Electron + React.js desktop app (in progress) for organizing
+        game project assets, with an in-app 3D asset preview.
+      </p>
+      <p class="entry-meta">TypeScript, Electron, React.js, Git, Three.js</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>## Skills</h2>
+    <hr />
+    <p><b>Languages:</b> C++, C#, Python, JavaScript, TypeScript, SQL, Java</p>
+    <p><b>Frameworks:</b> Electron, React, Vue.js, React Native, AngularJS</p>
+    <p>
+      <b>Tools:</b> Git, Docker, SQLite, .NET 6, OpenSCENARIO, Xmake, GitHub Flow
+    </p>
+    <p>
+      <b>Software:</b> Unity, Unreal Engine 5, Figma, Adobe Photoshop, Adobe Illustrator
+    </p>
+  </section>
+
+  <section>
+    <h2>## Personal Interests & Languages</h2>
+    <hr />
+    <p>
+      <b>Languages:</b> French (native), Spanish (native), English (fluent), Swedish
+      (proficient)
+    </p>
+    <p>
+      <b>Interests:</b> Systems programming, game development, generative AI, procedural
+      content generation, linguistics, simulation software
+    </p>
+  </section>
+</Base>

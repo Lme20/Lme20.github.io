@@ -1,17 +1,400 @@
 ---
-
+// src/pages/index.astro
+// Home page — textmode.js canvas
+import Base from "../layouts/Base.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base title="Hello World" fullscreen={true}>
+  <div id="home-contact">
+    <a href="mailto:louisme.2014@gmail.com">louisme.2014@gmail.com</a>
+    <a
+      href="https://www.linkedin.com/in/louis-mercier-713657134/"
+      target="_blank"
+      rel="noopener">linkedin/louis-mercier</a
+    >
+    <a href="https://github.com/Lme20" target="_blank" rel="noopener"
+      >github/Lme20</a
+    >
+    <span>Gothenburg, Sweden</span>
+  </div>
+
+  <div id="home-nav">
+    <a href="/me">[about me]</a>
+    <a href="/projects">[projects]</a>
+    <a href="/creations">[creations]</a>
+    <a href="/papers">[papers]</a>
+    <a href="/cv">[cv]</a>
+  </div>
+
+  <div id="welcome">
+    <p class="welcome-title">Welcome to my space</p>
+    <pre
+      id="welcome-name">{`
+██╗      ██████╗ ██╗   ██╗██╗███████╗    ███╗   ███╗███████╗██████╗  ██████╗██╗███████╗██████╗ 
+██║     ██╔═══██╗██║   ██║██║██╔════╝    ████╗ ████║██╔════╝██╔══██╗██╔════╝██║██╔════╝██╔══██╗
+██║     ██║   ██║██║   ██║██║███████╗    ██╔████╔██║█████╗  ██████╔╝██║     ██║█████╗  ██████╔╝
+██║     ██║   ██║██║   ██║██║╚════██║    ██║╚██╔╝██║██╔══╝  ██╔══██╗██║     ██║██╔══╝  ██╔══██╗
+███████╗╚██████╔╝╚██████╔╝██║███████║    ██║ ╚═╝ ██║███████╗██║  ██║╚██████╗██║███████╗██║  ██║
+╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚══════╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝╚══════╝╚═╝  ╚═╝
+`}</pre>
+    <p class="welcome-sub">I build things that should exist.</p>
+    <p class="welcome-caption">click anywhere to see some cool effects. ☺</p>
+  </div>
+
+  <div id="ascii-canvas-container"></div>
+
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>C++</span><span>▓</span>
+      <span>Python</span><span>▓</span>
+      <span>C#</span><span>▓</span>
+      <span>MongoDB</span><span>▓</span>
+      <span>TypeScript</span><span>▓</span>
+      <span>React</span><span>▓</span>
+      <span>Vue.js</span><span>▓</span>
+      <span>Unity 6</span><span>▓</span>
+      <span>Unreal Engine 5</span><span>▓</span>
+      <span>Electron</span><span>▓</span>
+      <span>Docker</span><span>▓</span>
+      <span>Git</span><span>▓</span>
+      <span>Figma</span><span>▓</span>
+      <span>SQLite</span><span>▓</span>
+      <span>SDL2</span><span>▓</span>
+      <span>BGFX</span><span>▓</span>
+      <!-- second round-->
+      <span>C++</span><span>▓</span>
+      <span>Python</span><span>▓</span>
+      <span>C#</span><span>▓</span>
+      <span>MongoDB</span><span>▓</span>
+      <span>TypeScript</span><span>▓</span>
+      <span>React</span><span>▓</span>
+      <span>Vue.js</span><span>▓</span>
+      <span>Unity 6</span><span>▓</span>
+      <span>Unreal Engine 5</span><span>▓</span>
+      <span>Electron</span><span>▓</span>
+      <span>Docker</span><span>▓</span>
+      <span>Git</span><span>▓</span>
+      <span>Figma</span><span>▓</span>
+      <span>SQLite</span><span>▓</span>
+      <span>SDL2</span><span>▓</span>
+      <span>BGFX</span><span>▓</span>
+    </div>
+  </div>
+
+  <script>
+    import { textmode } from "textmode.js";
+
+    const t = textmode.create({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      fontSize: 16,
+      frameRate: 60,
+    });
+
+    // ── ripple system ──
+    interface Ripple {
+      x: number; // pixel position
+      y: number;
+      birth: number; // frameCount when created
+    }
+
+    const ripples: Ripple[] = [];
+    const RIPPLE_LIFESPAN = 200; // frames before ripple fully fades
+    const RIPPLE_SPEED = 0.8; // how fast the ring expands
+    const MAX_RIPPLES = 20;
+
+    const PALETTE = [
+      [0, 200, 80], // green
+      [0, 180, 120], // teal
+      [0, 220, 180], // cyan
+      [50, 200, 50], // lime green
+      [180, 140, 0], // dark gold
+      [200, 180, 0], // amber
+      [0, 255, 100], // bright green
+    ];
+
+    document.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("#home-nav")) return;
+
+      ripples.push({
+        x: e.clientX,
+        y: e.clientY,
+        birth: t.frameCount,
+      });
+
+      // Remove oldest ripple if cap is reached
+      if (ripples.length > MAX_RIPPLES) {
+        ripples.shift();
+      }
+    });
+
+    t.draw(() => {
+      t.background(10);
+
+      if (!t.grid) return;
+
+      const cols = t.grid.cols;
+      const rows = t.grid.rows;
+      const cellW = window.innerWidth / cols;
+      const cellH = window.innerHeight / rows;
+      const time = t.frameCount * 0.02;
+
+      // Remove dead ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        if (t.frameCount - ripples[i].birth > RIPPLE_LIFESPAN) {
+          ripples.splice(i, 1);
+        }
+      }
+
+      // Draw each cell
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          // Pixel position of this cell's center
+          const px = (x + 0.5) * cellW;
+          const py = (y + 0.5) * cellH;
+
+          // Accumulate intensity from all active ripples
+          let totalIntensity = 0;
+
+          for (const ripple of ripples) {
+            const dx = px - ripple.x;
+            const dy = py - ripple.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            const age = t.frameCount - ripple.birth;
+            const radius = age * RIPPLE_SPEED * 3;
+            const fade = 1 - age / RIPPLE_LIFESPAN;
+
+            // Ring shape: intensity peaks near expanding radius
+            const ringDist = Math.abs(dist - radius);
+            const ringWidth = 40 + age * 0.3; // ring gets wider as it ages
+            const ringIntensity = Math.max(0, 1 - ringDist / ringWidth);
+
+            // Inner fill: faint ripple texture inside the ring
+            const innerWave =
+              dist < radius
+                ? Math.sin(dist * 0.08 - age * 0.06) * 0.3 * fade
+                : 0;
+
+            totalIntensity += ringIntensity * fade + Math.max(0, innerWave);
+          }
+
+          // background wave
+          const nx = x / cols;
+          const ny = y / rows;
+          const wave1 = Math.sin(nx * 8 + time);
+          const wave2 = Math.sin(ny * 6 + time * 1.3);
+          const wave3 = Math.sin((nx + ny) * 4 + time * 0.8);
+          const ambient = ((wave1 + wave2 + wave3) / 3 + 1) / 2; // normalize 0–1
+
+          // ambient intensity
+          totalIntensity = Math.min(1, totalIntensity + ambient * 0.25);
+
+          // Map intensity to character
+          if (totalIntensity > 0.8) {
+            t.char("█");
+          } else if (totalIntensity > 0.6) {
+            t.char("▓");
+          } else if (totalIntensity > 0.4) {
+            t.char("▒");
+          } else if (totalIntensity > 0.2) {
+            t.char("░");
+          } else if (totalIntensity > 0.1) {
+            t.char("·");
+          } else {
+            t.char(" ");
+          }
+
+          // Color led by intensity + time
+          const palettePos = (totalIntensity + time * 0.05) % 1;
+          const palIdx = palettePos * (PALETTE.length - 1);
+          const palLow = Math.floor(palIdx);
+          const palHigh = Math.min(palLow + 1, PALETTE.length - 1);
+          const blend = palIdx - palLow;
+
+          // Lerp between two adjacent palette colors
+          const cr =
+            PALETTE[palLow][0] +
+            (PALETTE[palHigh][0] - PALETTE[palLow][0]) * blend;
+          const cg =
+            PALETTE[palLow][1] +
+            (PALETTE[palHigh][1] - PALETTE[palLow][1]) * blend;
+          const cb =
+            PALETTE[palLow][2] +
+            (PALETTE[palHigh][2] - PALETTE[palLow][2]) * blend;
+
+          t.charColor(
+            Math.floor(cr * totalIntensity),
+            Math.floor(cg * totalIntensity),
+            Math.floor(cb * totalIntensity),
+          );
+
+          t.translate(x - cols / 2, y - rows / 2);
+          t.rect(1, 1);
+          t.translate(-(x - cols / 2), -(y - rows / 2));
+        }
+      }
+    });
+
+    t.windowResized(() => {
+      t.resizeCanvas(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</Base>
+
+<style>
+  #ascii-canvas-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* ── Welcome overlay ─────────────────────────────────── */
+  #welcome {
+    position: fixed;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    text-align: right;
+    pointer-events: none;
+
+    /* Fade in effect */
+    opacity: 0;
+    animation: fadeIn 2s ease-in 0.5s forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  #welcome-name {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    line-height: 1.1;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .welcome-sub {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: var(--fg);
+    margin-top: 0.25rem;
+  }
+
+  .welcome-title {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    color: var(--fg-bright);
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+
+  .welcome-caption {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #a6a6a6;
+    margin-top: 1rem;
+    font-style: italic;
+  }
+
+  /* ── Contact ────────────────────────────────────── */
+  #home-contact {
+    position: fixed;
+    top: 1rem;
+    left: 1.5rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  #home-contact a {
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  #home-contact a:hover {
+    color: var(--accent);
+  }
+
+  #home-contact span {
+    color: #666;
+  }
+
+  /* ── Nav ──────────────────────────────────────────────── */
+  #home-nav {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+  }
+
+  #home-nav a {
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  #home-nav a:hover {
+    color: var(--accent);
+  }
+
+  /* ── Scrolling effect ─────────────────────────────────── */
+  .marquee {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    overflow: hidden;
+    padding: 0.4rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 1.5rem;
+    white-space: nowrap;
+    width: max-content;
+    animation: scroll-left 30s linear infinite;
+  }
+
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ── Responsive ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    #welcome {
+      right: 1rem;
+      left: 1rem;
+      text-align: center;
+      top: auto;
+      bottom: 3rem;
+      transform: none;
+    }
+
+    #welcome-title {
+      font-size: 0.4rem;
+    }
+
+    #home-contact {
+      display: none;
+    }
+  }
+</style>

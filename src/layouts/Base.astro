@@ -1,0 +1,40 @@
+---
+import Nav from "../components/Nav.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  fullscreen?: boolean; // true for home page
+}
+
+const { title, description = "", fullscreen = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    {!fullscreen && <Nav />}
+
+    {
+      fullscreen ? (
+        <slot />
+      ) : (
+        <main class="content">
+          <slot />
+        </main>
+      )
+    }
+  </body>
+</html>

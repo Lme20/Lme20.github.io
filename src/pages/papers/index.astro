@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const papers = (await getCollection("papers")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Base title="Papers" description="Things I've written">
+  <h1>~/papers</h1>
+  <br />
+  {
+    papers.map((paper) => (
+      <div class="entry">
+        <a href={`/papers/${paper.id}`} class="entry-title">
+          &gt; {paper.data.title}
+        </a>
+        <p>{paper.data.abstract}</p>
+        <span class="entry-meta">
+          {paper.data.date.toISOString().slice(0, 10)}
+          {" | "}
+          {paper.data.tags.map((tag) => (
+            <span class="tag">{tag} </span>
+          ))}
+        </span>
+      </div>
+    ))
+  }
+
+  {
+    papers.length === 0 && (
+      <p>No papers yet. Add .md files to src/content/papers/</p>
+    )
+  }
+</Base>

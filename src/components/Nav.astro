@@ -1,0 +1,53 @@
+---
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { href: "/", label: "home" },
+  { href: "/me", label: "about me" },
+  { href: "/projects", label: "projects" },
+  { href: "/creations", label: "creations" },
+  { href: "/papers", label: "papers" },
+  { href: "/cv", label: "cv" },
+];
+---
+
+<nav class="nav">
+  <span class="nav-prompt">$</span>
+  {
+    links.map((link) => (
+      <a
+        href={link.href}
+        class:list={["nav-link", { active: currentPath === link.href }]}
+      >
+        [{link.label}]
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .nav {
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .nav-prompt {
+    color: var(--accent);
+    margin-right: 0.25rem;
+  }
+
+  .nav-link {
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--accent);
+  }
+</style>

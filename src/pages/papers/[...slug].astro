@@ -1,0 +1,45 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const papers = await getCollection("papers");
+  return papers.map((paper) => ({
+    params: { slug: paper.id },
+    props: { paper },
+  }));
+}
+
+const { paper } = Astro.props;
+const { Content } = await render(paper);
+---
+
+<Base title={paper.data.title} description={paper.data.abstract}>
+  <p><a href="/papers">&lt; back to papers</a></p>
+  <br />
+  <h1>{paper.data.title}</h1>
+  <span class="entry-meta">
+    {paper.data.date.toISOString().slice(0, 10)}
+    {paper.data.tags.map((tag) => <span class="tag">{tag} </span>)}
+  </span>
+  {
+    paper.data.pdf_url && (
+      <span>
+        {" "}
+        | <a href={paper.data.pdf_url}>PDF</a>
+      </span>
+    )
+  }
+  {
+    paper.data.repo && (
+      <span>
+        {" "}
+        | <a href={paper.data.repo}>source</a>
+      </span>
+    )
+  }
+  <br /><br />
+  <article>
+    <Content />
+  </article>
+</Base>

@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const content = (await getCollection("creations")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const group = new Map<number, typeof content>();
+for (const project of content) {
+  const year = project.data.date.getFullYear();
+  if (!group.has(year)) group.set(year, []);
+  group.get(year)!.push(project);
+}
+---
+
+<Base title="Creations" description="Personal projects">
+  <h1>~/creations</h1>
+  <br />
+
+  {
+    [...group.entries()].map(([year, projects]) => (
+      <>
+        <div class="separator">
+          <span class="label">{year}</span>
+          <span class="line">{"❯".repeat(100)}</span>
+        </div>
+        <div class="grid-projects">
+          {projects.map((project) => (
+            <div class="entry">
+              <a href={`/creations/${project.id}`} class="entry-title">
+                &gt; {project.data.title}
+              </a>
+              <p>{project.data.description}</p>
+
+              {project.data.thumbnail && (
+                <img
+                  class="entry-thumbnail"
+                  src={project.data.thumbnail}
+                  alt={project.data.title}
+                  loading="lazy"
+                />
+              )}
+
+              <span class="entry-meta">
+                {project.data.date.toISOString().slice(0, 10)}
+                {" | "}
+                {project.data.tags.map((tag) => (
+                  <span class="tag">{tag} </span>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+      </>
+    ))
+  }
+
+  {content.length === 0 && <p>No projects yet.</p>}
+</Base>
+
+<style>
+  .separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .label {
+    color: #ccc;
+    white-space: nowrap;
+  }
+
+  .line {
+    color: #ccc;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .grid-projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+</style>

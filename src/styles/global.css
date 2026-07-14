@@ -1,0 +1,172 @@
+/* ── Reset ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── Base ──────────────────────────────────────────────── */
+:root {
+  --bg: #0a0a0a;
+  --fg: #c0c0c0;
+  --fg-bright: #ffffff;
+  --accent: #00ff88;
+  --accent-dim: #00aa55;
+  --font-mono:
+    "IBM Plex Mono", "Fira Code", "JetBrains Mono", "Courier New", monospace;
+  --font-size-base: 16px;
+  --max-width: 72ch;
+}
+
+html {
+  font-size: var(--font-size-base);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* ── Typography ────────────────────────────────────────── */
+h1,
+h2,
+h3 {
+  color: var(--fg-bright);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  padding: 0.5rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ── Separators ─────────────────────────────────────────────── */
+hr {
+  display: block;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  border-top: 0.5px solid #ccc;
+}
+
+/* ── Content container ─────────────────────────────────── */
+.content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* ── decorative borders ──────────────────────────── */
+.ascii-border {
+  border: 1px solid var(--fg);
+  padding: 1rem;
+}
+
+.ascii-border::before {
+  content: "┌" attr(data-title) "┐";
+  display: block;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Card items ────────── */
+.entry {
+  /* border-bottom: 1px solid #333; */
+  padding: 1rem 0;
+}
+
+.entry:last-child {
+  border-bottom: none;
+}
+
+.entry-title {
+  color: var(--fg-bright);
+}
+
+.entry-meta {
+  color: #666;
+  font-size: 0.875rem;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  color: var(--accent-dim);
+}
+
+.tag::before {
+  content: "#";
+}
+
+.entry-thumbnail {
+  margin-top: 0.5rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.sub-entry {
+  border-left: 1px solid #333;
+  padding-left: 1.5rem;
+  margin-left: 1rem;
+  margin-top: 0.75rem;
+}
+
+.sub-entry h5 {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sub-entry p {
+  margin-top: 0.25rem;
+}
+
+/* ── Grids ─────────────────────────────────────────────── */
+.grid-container {
+  display: grid;
+  grid-template-columns: 65% 35%;
+  margin-top: 1.5rem;
+}
+
+/* ── CV page ───────────────────────────────────────────── */
+.cv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.5rem;
+}
+
+.cv-download {
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .entry-thumbnail {
+    max-width: 100%;
+  }
+}
