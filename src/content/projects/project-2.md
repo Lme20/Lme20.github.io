@@ -1,11 +1,11 @@
 ---
 title: "AD/ADAS Test Scenario Generator"
-description: "A 3D engine with PCG for rapid prototyping."
-thumbnail: "/images/engine.png"
+description: "Test scenario generator for AD/ADAS using LLMS and scraped data."
+thumbnail: "/images/scenario-gen.png"
 tags: ["python", "AD/ADAS", "agile methodologies"]
-date: 2024-01-15
+date: 2024-06-26
 featured: true
-repo: "https://github.com/yourusername/sample-project"
+repo: "https://github.com/Lme20/openscenario-osint-generator"
 category: "software"
 ---
 

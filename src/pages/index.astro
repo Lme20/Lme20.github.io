@@ -2,6 +2,7 @@
 // src/pages/index.astro
 // Home page — textmode.js canvas
 import Base from "../layouts/Base.astro";
+import Modal from "../components/Modal.astro";
 ---
 
 <Base title="Hello World" fullscreen={true}>
@@ -40,6 +41,14 @@ import Base from "../layouts/Base.astro";
     <p class="welcome-sub">I build things that should exist.</p>
     <p class="welcome-caption">click anywhere to see some cool effects. ☺</p>
   </div>
+
+  <Modal
+    title="Hello there :)"
+    text="My site is still a work in progress, so take that into account while looking around."
+  >
+    <img slot="image" src="/images/under-construction.webp" alt="welcome" />
+    <button slot="close">[ × ]</button>
+  </Modal>
 
   <div id="ascii-canvas-container"></div>
 
@@ -380,20 +389,52 @@ import Base from "../layouts/Base.astro";
 
   /* ── Responsive ──────────────────────────────────────── */
   @media (max-width: 768px) {
+    #home-nav {
+      top: auto;
+      bottom: 3rem;
+      right: 0;
+      left: 0;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 1.3rem;
+      pointer-events: none;
+    }
+
+    #home-nav a {
+      pointer-events: auto;
+    }
+
+    #home-contact {
+      font-size: 1.3rem;
+    }
+
     #welcome {
       right: 1rem;
       left: 1rem;
       text-align: center;
-      top: auto;
-      bottom: 3rem;
-      transform: none;
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
     }
 
-    #welcome-title {
-      font-size: 0.4rem;
+    .welcome-title {
+      font-size: 1.3rem;
     }
 
-    #home-contact {
+    #welcome-name {
+      font-size: 0.3rem;
+      overflow: hidden;
+    }
+
+    .welcome-sub {
+      font-size: 1rem;
+    }
+
+    .welcome-caption {
+      font-size: 1rem;
+    }
+
+    .marquee {
       display: none;
     }
   }

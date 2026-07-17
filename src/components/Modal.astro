@@ -1,0 +1,100 @@
+---
+const { text, title } = Astro.props;
+---
+
+<dialog>
+  <h2>{title}</h2>
+  <div class="modal-body">
+    <div class="modal-image">
+      <slot name="image" />
+    </div>
+    <div class="modal-text">
+      <p>{text}</p>
+      <slot />
+    </div>
+  </div>
+  <form method="dialog">
+    <slot name="close">
+      <button type="submit">[close]</button>
+    </slot>
+  </form>
+</dialog>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const dialog = document.querySelector("dialog");
+    if (dialog && !localStorage.getItem("modal-seen")) {
+      dialog.showModal();
+      localStorage.setItem("modal-seen", "true");
+    }
+  });
+</script>
+
+<style>
+  dialog {
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid #333;
+    font-family: var(--font-mono);
+    padding: 2rem;
+    max-width: 60ch;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  dialog h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal-body {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .modal-image {
+    flex-shrink: 0;
+    max-width: 40%;
+  }
+
+  .modal-image :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .modal-text {
+    flex: 1;
+  }
+
+  .modal-text p {
+    font-size: 0.85rem;
+  }
+
+  form {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  form :global(button) {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+  }
+
+  form :global(button):hover {
+    text-decoration: underline;
+  }
+</style>
