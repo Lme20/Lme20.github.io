@@ -94,12 +94,14 @@ hr {
 
 /* ── Card items ────────── */
 .entry {
-  /* border-bottom: 1px solid #333; */
-  padding: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #00ff88;
+  border-radius: 5px;
+  margin-bottom: 1rem;
 }
 
 .entry:last-child {
-  border-bottom: none;
+  // border-bottom: none;
 }
 
 .entry-title {
