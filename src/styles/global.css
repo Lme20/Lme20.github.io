@@ -17,7 +17,7 @@
   --font-mono:
     "IBM Plex Mono", "Fira Code", "JetBrains Mono", "Courier New", monospace;
   --font-size-base: 16px;
-  --max-width: 72ch;
+  --max-width: 120ch;
 }
 
 html {

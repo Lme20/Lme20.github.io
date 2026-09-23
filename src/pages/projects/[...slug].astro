@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Gallery from "../../components/Gallery.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -42,4 +43,13 @@ const { Content } = await render(project);
   <article>
     <Content />
   </article>
+
+  {
+    project.data.gallery.length > 0 && (
+      <Gallery
+        images={project.data.gallery}
+        columns={project.data.category === "design" ? 2 : 3}
+      />
+    )
+  }
 </Base>

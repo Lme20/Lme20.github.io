@@ -10,6 +10,10 @@ const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
+    gallery: z.array(z.object({
+      src: z.string(),
+      alt: z.string(),
+    })).default([]),
     description: z.string(),
     thumbnail: z.string().optional(),
     tags: z.array(z.string()).default([]),

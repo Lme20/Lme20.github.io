@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Gallery from "../../components/Gallery.astro";
 import { getCollection } from "astro:content";
 
 const content = (await getCollection("projects")).sort(
@@ -25,52 +26,61 @@ const order = ["software", "design"];
   <h1>~/projects</h1>
   <br />
 
-  {
-    order.map((category) => {
-      const years = group.get(category);
-      if (!years) return null;
+  <div class="projects-columns">
+    {
+      order.map((category) => {
+        const years = group.get(category);
+        if (!years) return null;
 
-      return (
-        <>
-          <div class="separator">
-            <span class="label">{category}</span>
-            <span class="line">{"❯".repeat(100)}</span>
+        return (
+          <div class="projects-column">
+            <div class="separator">
+              <span class="label">{category}</span>
+              <span class="line">{"❯".repeat(50)}</span>
+            </div>
+
+            {[...years.entries()].map(([year, projects]) => (
+              <>
+                <p class="label">~{year}</p>
+                {projects.map((project) =>
+                  project.data.category === "design" &&
+                  project.data.gallery.length > 0 ? (
+                    <div class="entry">
+                      <p class="entry-title">&gt; {project.data.title}</p>
+                      <p>{project.data.description}</p>
+                      <Gallery images={project.data.gallery} columns={2} />
+                    </div>
+                  ) : (
+                    <div class="entry">
+                      <a href={`/projects/${project.id}`} class="entry-title">
+                        &gt; {project.data.title}
+                      </a>
+                      <p>{project.data.description}</p>
+
+                      {project.data.thumbnail && (
+                        <img
+                          class="entry-thumbnail"
+                          src={project.data.thumbnail}
+                          alt={project.data.title}
+                          loading="lazy"
+                        />
+                      )}
+
+                      <span class="entry-meta">
+                        {project.data.tags.map((tag) => (
+                          <span class="tag">{tag} </span>
+                        ))}
+                      </span>
+                    </div>
+                  ),
+                )}
+              </>
+            ))}
           </div>
-
-          {[...years.entries()].map(([year, projects]) => (
-            <>
-              <p class="label">~{year}</p>
-              <div class="grid-projects">
-                {projects.map((project) => (
-                  <div class="entry">
-                    <a href={`/projects/${project.id}`} class="entry-title">
-                      &gt; {project.data.title}
-                    </a>
-                    <p>{project.data.description}</p>
-
-                    {project.data.thumbnail && (
-                      <img
-                        class="entry-thumbnail"
-                        src={project.data.thumbnail}
-                        alt={project.data.title}
-                        loading="lazy"
-                      />
-                    )}
-
-                    <span class="entry-meta">
-                      {project.data.tags.map((tag) => (
-                        <span class="tag">{tag} </span>
-                      ))}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </>
-          ))}
-        </>
-      );
-    })
-  }
+        );
+      })
+    }
+  </div>
 
   {content.length === 0 && <p>No projects yet.</p>}
 </Base>
@@ -100,5 +110,22 @@ const order = ["software", "design"];
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-top: 1.5rem;
+  }
+
+  .projects-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .projects-column {
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .projects-columns {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
