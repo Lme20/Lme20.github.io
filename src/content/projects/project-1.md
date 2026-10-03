@@ -6,7 +6,6 @@ tags: ["C++", "ECS", "engine architecture", "BGFX"]
 date: 2025-01-15
 featured: true
 repo: "https://github.com/yourusername/sample-project"
-category: "software"
 ---
 
 # Sample Project

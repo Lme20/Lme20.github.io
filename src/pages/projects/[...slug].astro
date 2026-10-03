@@ -46,10 +46,7 @@ const { Content } = await render(project);
 
   {
     project.data.gallery.length > 0 && (
-      <Gallery
-        images={project.data.gallery}
-        columns={project.data.category === "design" ? 2 : 3}
-      />
+      <Gallery images={project.data.gallery} columns={3} />
     )
   }
 </Base>

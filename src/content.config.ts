@@ -16,12 +16,12 @@ const projects = defineCollection({
     })).default([]),
     description: z.string(),
     thumbnail: z.string().optional(),
+    video: z.string().optional(),
     tags: z.array(z.string()).default([]),
     url: z.string().url().optional(),    
     repo: z.string().url().optional(),       
-    date: z.coerce.date(),                    // handles string or Date
+    date: z.coerce.date(),                    // string or Date
     featured: z.boolean().default(false),
-    category: z.enum(["software", "design"]).default("software"),
   }),
 });
 
@@ -39,6 +39,20 @@ const creations = defineCollection({
   }),
 });
 
+const design = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/design" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    kind: z.enum(["poster", "ui", "visual"]),
+    date: z.coerce.date(),
+    tools: z.array(z.string()).default([]),
+    gallery: z
+      .array(z.object({ src: z.string(), alt: z.string() }))
+      .min(1),
+  }),
+});
+
 const papers = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/papers" }),
   schema: z.object({
@@ -53,4 +67,4 @@ const papers = defineCollection({
   }),
 });
 
-export const collections = { projects, creations, papers };
+export const collections = { projects, creations, papers, design };

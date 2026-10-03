@@ -1,7 +1,7 @@
 ---
 title: "SKIP Posters"
 description: "Promotional posters for the SKIP student association."
-category: "design"
+kind: poster
 date: 2023-01-01
 gallery:
   - src: "/material/reddit-lecture.webp"
@@ -11,5 +11,3 @@ gallery:
   - src: "/material/gpt-lecture.webp"
     alt: "SKIP workshop poster"
 ---
-
-Hi!

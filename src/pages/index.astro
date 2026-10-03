@@ -1,8 +1,8 @@
 ---
-// src/pages/index.astro
-// Home page — textmode.js canvas
 import Base from "../layouts/Base.astro";
 import Modal from "../components/Modal.astro";
+
+import { navLinks } from "../data/nav";
 ---
 
 <Base title="Hello World" fullscreen={true}>
@@ -20,11 +20,11 @@ import Modal from "../components/Modal.astro";
   </div>
 
   <div id="home-nav">
-    <a href="/me">[about me]</a>
-    <a href="/projects">[projects]</a>
-    <a href="/creations">[creations]</a>
-    <a href="/papers">[papers]</a>
-    <a href="/cv">[cv]</a>
+    {
+      navLinks
+        .filter((link) => link.href !== "/")
+        .map((link) => <a href={link.href}>[{link.label}]</a>)
+    }
   </div>
 
   <div id="welcome">

@@ -1,7 +1,7 @@
 ---
 title: "SKIP Posters"
 description: "Promotional posters for the SKIP student association."
-category: "design"
+kind: poster
 date: 2024-01-01
 gallery:
   - src: "/material/func-prog-lecture.webp"
@@ -15,4 +15,3 @@ gallery:
   - src: "/material/skip-promo.webp"
     alt: "SKIP recruitment poster"
 ---
-

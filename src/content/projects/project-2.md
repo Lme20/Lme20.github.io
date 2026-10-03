@@ -6,7 +6,6 @@ tags: ["python", "AD/ADAS", "agile methodologies"]
 date: 2024-06-26
 featured: true
 repo: "https://github.com/Lme20/openscenario-osint-generator"
-category: "software"
 ---
 
 # Sample Project

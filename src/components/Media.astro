@@ -1,0 +1,107 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  video?: string;
+  ratio?: string; // omit to keep the natural size
+}
+
+const { src, alt, video, ratio } = Astro.props;
+---
+
+<span
+  class:list={["media", { fixed: ratio }]}
+  style={ratio ? `--ratio: ${ratio}` : undefined}
+>
+  {
+    video ? (
+      <video
+        src={video}
+        poster={src}
+        muted
+        loop
+        playsinline
+        preload="none"
+        aria-label={alt}
+      />
+    ) : (
+      <img src={src} alt={alt} loading="lazy" />
+    )
+  }
+</span>
+
+<script>
+  document.querySelectorAll<HTMLVideoElement>(".media video").forEach((v) => {
+    const host = v.closest(".media-host") ?? v;
+    host.addEventListener("mouseenter", () => v.play().catch(() => {}));
+    host.addEventListener("mouseleave", () => {
+      v.pause();
+      v.currentTime = 0;
+    });
+  });
+</script>
+
+<style>
+  .media {
+    position: relative;
+    display: block;
+  }
+
+  .media img,
+  .media video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .media.fixed img,
+  .media.fixed video {
+    aspect-ratio: var(--ratio);
+    object-fit: cover;
+  }
+
+  @media (hover: hover) {
+    .media img,
+    .media video {
+      filter: grayscale(1) contrast(1.3) brightness(0.9);
+      transition: filter 0.2s;
+    }
+
+    .media::before,
+    .media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    /* Green tint */
+    .media::before {
+      background: var(--accent);
+      mix-blend-mode: multiply;
+      opacity: 0.2;
+    }
+
+    /* Halftone dots */
+    .media::after {
+      background-image: radial-gradient(var(--bg) 0.8px, transparent 0.2px);
+      background-size: 3px 3px;
+      opacity: 0.2;
+    }
+
+    :global(.media-host:hover) .media img,
+    :global(.media-host:hover) .media video,
+    :global(.media-host:focus-within) .media img,
+    :global(.media-host:focus-within) .media video {
+      filter: none;
+    }
+
+    :global(.media-host:hover) .media::before,
+    :global(.media-host:hover) .media::after,
+    :global(.media-host:focus-within) .media::before,
+    :global(.media-host:focus-within) .media::after {
+      opacity: 0;
+    }
+  }
+</style>

@@ -6,7 +6,6 @@ tags: ["JavaScript", "Vue.js", "REST API", "MongoDB"]
 date: 2023-10-17
 featured: true
 repo: "https://github.com/Lme20/travelbuddy"
-category: "software"
 ---
 
 # Travelbuddy

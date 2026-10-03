@@ -72,6 +72,26 @@ hr {
   border-top: 0.5px solid #ccc;
 }
 
+/* ── Year separators ───────────────────────────────────── */
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.separator .label {
+  color: #ccc;
+  white-space: nowrap;
+}
+
+.separator .line {
+  color: #ccc;
+  overflow: hidden;
+  width: 100%;
+}
+
 /* ── Content container ─────────────────────────────────── */
 .content {
   max-width: var(--max-width);

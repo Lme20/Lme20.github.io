@@ -6,7 +6,6 @@ tags: ["C++", "IoT", "MQTT", "node-red"]
 date: 2022-08-15
 featured: true
 repo: "https://github.com/Lme20/pomodoro-system"
-category: "software"
 ---
 
 # Sample Project

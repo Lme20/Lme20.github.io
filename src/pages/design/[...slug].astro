@@ -1,0 +1,62 @@
+---
+import Base from "../../layouts/Base.astro";
+import Gallery from "../../components/Gallery.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("design");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"design">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, date, gallery, tools } = entry.data;
+---
+
+<Base title={title} description={description}>
+  <p><a href="/design">&lt; back to design</a></p>
+  <br />
+  <h1>{title}</h1>
+  <p>{description}</p>
+
+  <dl class="design-meta">
+    <dt>date</dt>
+    <dd>{date.toISOString().slice(0, 10)}</dd>
+    {
+      tools.length > 0 && (
+        <>
+          <dt>tools</dt>
+          <dd>{tools.join(", ")}</dd>
+        </>
+      )
+    }
+  </dl>
+
+  <article>
+    <Content />
+  </article>
+
+  <Gallery images={gallery} columns={2} />
+</Base>
+
+<style>
+  .design-meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.25rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  .design-meta dt {
+    color: #666;
+  }
+</style>
