@@ -1,6 +1,5 @@
 ---
 import Base from "../layouts/Base.astro";
-import Modal from "../components/Modal.astro";
 
 import { navLinks } from "../data/nav";
 ---
@@ -42,18 +41,13 @@ import { navLinks } from "../data/nav";
     <p class="welcome-caption">click anywhere to see some cool effects. ☺</p>
   </div>
 
-  <Modal
-    title="Hello there :)"
-    text="My site is still a work in progress, so take that into account while looking around."
-  >
-    <img slot="image" src="/images/under-construction.webp" alt="welcome" />
-    <button slot="close">[ × ]</button>
-  </Modal>
-
   <div id="ascii-canvas-container"></div>
 
   <div class="marquee">
     <div class="marquee-track">
+      <span class="marquee-note">
+        - site under construction, more projects coming :)
+      </span><span>▓</span>
       <span>C++</span><span>▓</span>
       <span>Python</span><span>▓</span>
       <span>C#</span><span>▓</span>
@@ -71,6 +65,9 @@ import { navLinks } from "../data/nav";
       <span>SDL2</span><span>▓</span>
       <span>BGFX</span><span>▓</span>
       <!-- second round-->
+      <span class="marquee-note"
+        >- site under construction, more projects coming :)</span
+      ><span>▓</span>
       <span>C++</span><span>▓</span>
       <span>Python</span><span>▓</span>
       <span>C#</span><span>▓</span>
@@ -333,7 +330,7 @@ import { navLinks } from "../data/nav";
   }
 
   #home-contact span {
-    color: #666;
+    color: var(--fg-dim);
   }
 
   /* ── Nav ──────────────────────────────────────────────── */
@@ -367,7 +364,11 @@ import { navLinks } from "../data/nav";
     padding: 0.4rem 0;
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    color: #666;
+    color: var(--fg-dim);
+  }
+
+  .marquee-note {
+    color: var(--accent-dim);
   }
 
   .marquee-track {
@@ -405,7 +406,7 @@ import { navLinks } from "../data/nav";
     }
 
     #home-contact {
-      font-size: 1.3rem;
+      font-size: 0.9rem;
     }
 
     #welcome {

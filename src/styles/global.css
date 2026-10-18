@@ -14,6 +14,7 @@
   --fg-bright: #ffffff;
   --accent: #00ff88;
   --accent-dim: #00aa55;
+  --fg-dim: #8a8a8a; /* ~5.7:1 on --bg, passes WCAG AA */
   --font-mono:
     "IBM Plex Mono", "Fira Code", "JetBrains Mono", "Courier New", monospace;
   --font-size-base: 16px;
@@ -26,8 +27,6 @@ html {
   color: var(--fg);
   font-family: var(--font-mono);
   line-height: 1.6;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: unset;
 }
 
 body {
@@ -129,7 +128,7 @@ hr {
 }
 
 .entry-meta {
-  color: #666;
+  color: var(--fg-dim);
   font-size: 0.875rem;
   display: block;
   margin-top: 0.5rem;

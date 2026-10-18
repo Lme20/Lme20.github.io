@@ -2,7 +2,7 @@
 title: "Travelbuddy - Planning and journaling app for travellers"
 description: "Travelbuddy helps you plan, track, and journal lifetime memories of your travels. This web-based app offers,several features. You can list your visited destinations, create packing and bucket lists, and plan your trips and expenses."
 thumbnail: "/images/travelbuddy.png"
-tags: ["JavaScript", "Vue.js", "REST API", "MongoDB"]
+tags: ["JavaScript", "Vue.js", "REST_API", "MongoDB"]
 date: 2023-10-17
 featured: true
 repo: "https://github.com/Lme20/travelbuddy"
