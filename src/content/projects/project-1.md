@@ -1,21 +1,21 @@
 ---
 title: "Custom Game Engine"
 description: "A 3D engine with PCG for rapid prototyping."
-thumbnail: "/images/engine.png"
+thumbnail: "/images/engine.webp"
 tags: ["C++", "ECS", "engine_architecture", "BGFX"]
 date: 2025-01-15
 featured: true
-repo: "https://github.com/yourusername/sample-project"
+repo: "https://github.com/scape-engine/ScapeEngine"
 ---
 
 # Sample Project
 
-Replace it with a real project description.
+Description here
 
 ## What I built
 
-Describe the project here.
+Describe my project here.
 
 ## What I learned
 
-Describe key takeaways.
+My key takeaways.

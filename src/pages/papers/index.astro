@@ -13,10 +13,14 @@ const papers = (await getCollection("papers")).sort(
   {
     papers.map((paper) => (
       <div class="entry">
-        <a href={`/papers/${paper.id}`} class="entry-title">
+        <a
+          href={paper.data.url ?? `/papers/${paper.id}`}
+          target={paper.data.url ? "_blank" : undefined}
+          rel={paper.data.url ? "noopener" : undefined}
+          class="entry-title"
+        >
           &gt; {paper.data.title}
         </a>
-        <p>{paper.data.abstract}</p>
         <span class="entry-meta">
           {paper.data.date.toISOString().slice(0, 10)}
           {" | "}
