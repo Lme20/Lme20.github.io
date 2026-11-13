@@ -71,8 +71,26 @@ hr {
   border-top: 0.5px solid #ccc;
 }
 
-article p + p {
-    margin-top: 1rem;
+/* Space between any two neighbouring blocks in an article */
+article > * + * {
+  margin-top: 1rem;
+}
+
+/* Headings: more space above than below, aligned with the text */
+article h2,
+article h3 {
+  margin-top: 2rem;
+  padding: 0;
+}
+
+/* Give bullets back the room the reset removed */
+article ul,
+article ol {
+  padding-left: 1.5rem;
+}
+
+article li + li {
+  margin-top: 0.25rem;
 }
 
 /* ── Year separators ───────────────────────────────────── */
