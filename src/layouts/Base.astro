@@ -1,6 +1,11 @@
 ---
 import Nav from "../components/Nav.astro";
 import "../styles/global.css";
+// Self-hosted fonts (no render-blocking request to Google Fonts)
+import "@fontsource/vt323/400.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/700.css";
+import vt323 from "@fontsource/vt323/files/vt323-latin-400-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -19,10 +24,7 @@ const { title, description = "", fullscreen = false } = Astro.props;
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=VT323&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href={vt323} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <!-- ASCII waves behind every page; fainter behind reading pages -->

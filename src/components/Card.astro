@@ -4,6 +4,7 @@
 import Media from "./Media.astro";
 import Cells from "./Cells.astro";
 import Tags from "./Tags.astro";
+import type { ImageMetadata } from "astro";
 
 interface Props {
   href: string;
@@ -11,7 +12,7 @@ interface Props {
   description: string;
   date: Date;
   tags: string[];
-  thumbnail?: string;
+  thumbnail?: ImageMetadata;
   video?: string;
   meta?: [string, unknown][];
   repo?: string;

@@ -1,7 +1,7 @@
 ---
 title: "AD/ADAS Test Scenario Generator"
 description: "Test scenario generator for AD/ADAS using LLMS and scraped data."
-thumbnail: "/images/scenario-gen.png"
+thumbnail: "../../assets/images/scenario-gen.png"
 tags: ["python", "AD/ADAS", "agile_methodologies"]
 date: 2024-06-26
 featured: true

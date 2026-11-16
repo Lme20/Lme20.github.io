@@ -8,14 +8,15 @@ import { z } from "astro/zod";
 
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
-  schema: z.object({
+  // Image paths are relative to the .md file (e.g. "../../assets/images/x.webp")
+  schema: ({ image }) => z.object({
     title: z.string(),
     gallery: z.array(z.object({
-      src: z.string(),
+      src: image(),
       alt: z.string(),
     })).default([]),
     description: z.string(),
-    thumbnail: z.string().optional(),
+    thumbnail: image().optional(),
     video: z.string().optional(),
     tags: z.array(z.string()).default([]),
     url: z.string().url().optional(),    
@@ -32,10 +33,10 @@ const projects = defineCollection({
 
 const creations = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/creations" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
-    thumbnail: z.string().optional(),
+    thumbnail: image().optional(),
     tags: z.array(z.string()).default([]),
     url: z.string().url().optional(),    
     repo: z.string().url().optional(),       
@@ -46,14 +47,14 @@ const creations = defineCollection({
 
 const design = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/design" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     kind: z.enum(["poster", "ui", "visual"]),
     date: z.coerce.date(),
     tools: z.array(z.string()).default([]),
     gallery: z
-      .array(z.object({ src: z.string(), alt: z.string() }))
+      .array(z.object({ src: image(), alt: z.string() }))
       .min(1),
   }),
 });

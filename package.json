@@ -12,11 +12,15 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "astro": "^6.0.8",
     "textmode.js": "^0.10.0",
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "@types/three": "^0.170.0"
   }
 }

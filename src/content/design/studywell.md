@@ -5,7 +5,7 @@ kind: ui
 date: 2025-03-21
 tools: ["Figma", "UX Pilot"]
 gallery:
-  - src: "/material/studywell-cover.webp"
+  - src: "../../assets/material/studywell-cover.webp"
     alt: "Four StudyWell screens: landing page, account creation, home dashboard, and recommendations with progress chart"
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Custom Game Engine"
 description: "A 3D engine with PCG for rapid prototyping."
-thumbnail: "/images/engine.webp"
+thumbnail: "../../assets/images/engine.webp"
 tags: ["C++", "ECS", "engine_architecture", "BGFX"]
 date: 2025-01-15
 featured: true

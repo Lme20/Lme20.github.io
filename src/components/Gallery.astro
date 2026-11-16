@@ -1,17 +1,28 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 interface Props {
-  images: { src: string; alt: string }[];
+  images: { src: ImageMetadata; alt: string }[];
   columns?: number;
 }
 
 const { images, columns = 2 } = Astro.props;
+// 72rem max width = 1152px, split across the columns
+const sizes = `(max-width: 768px) 100vw, ${Math.round(1152 / columns)}px`;
 ---
 
 <div class="gallery" style={`--cols: ${columns}`}>
   {
     images.map((img) => (
-      <a href={img.src} target="_blank" class="gallery-item">
-        <img src={img.src} alt={img.alt} loading="lazy" />
+      <a href={img.src.src} target="_blank" class="gallery-item">
+        <Image
+          src={img.src}
+          alt={img.alt}
+          widths={[600, 1200]}
+          sizes={sizes}
+          loading="lazy"
+        />
       </a>
     ))
   }

@@ -84,7 +84,20 @@ import Base from "../layouts/Base.astro";
   </div>
 
   <script>
-    import "../scripts/home-3d"; // the bust
+    // The bust: three.js and the model load only when it's about to be seen
+    const bustCanvas = document.querySelector<HTMLCanvasElement>("#bust-canvas");
+    if (bustCanvas) {
+      const io = new IntersectionObserver(
+        async ([entry]) => {
+          if (!entry.isIntersecting) return;
+          io.disconnect();
+          const { start } = await import("../scripts/home-3d");
+          start(bustCanvas);
+        },
+        { rootMargin: "200px" },
+      );
+      io.observe(bustCanvas);
+    }
 
     // ── Interactive text ──
     // Every character of a .scramble element becomes its own element.

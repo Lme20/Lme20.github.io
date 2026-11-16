@@ -1,7 +1,7 @@
 ---
 title: "Travelbuddy - Planning and journaling app for travellers"
 description: "The Travelbuddy platforms helps plan, track, and journal travels. This web-based app offers, several features, including listing visited destinations, create packing and bucket lists, and plan trips and expenses."
-thumbnail: "/images/travelbuddy.png"
+thumbnail: "../../assets/images/travelbuddy.png"
 tags: ["JavaScript", "Vue.js", "REST_API", "MongoDB", "Google_Maps_API"]
 date: 2023-10-17
 featured: true

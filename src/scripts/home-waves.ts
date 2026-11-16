@@ -43,7 +43,19 @@ if (canvas) {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const t = textmode.create({ canvas, fontSize: FONT_SIZE, frameRate: 30 });
+  // The waves drift slowly (about 0.13 rad/s), so 10 fps looks the same as 30
+  // for a third of the work.
+  const t = textmode.create({ canvas, fontSize: FONT_SIZE, frameRate: 10 });
+
+  // Reduced motion: draw one still frame instead of redrawing it forever
+  t.setup(() => {
+    if (still) t.noLoop();
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) t.noLoop();
+    else if (!still) t.loop();
+  });
 
   t.draw(() => {
     t.background(10);
@@ -107,5 +119,6 @@ if (canvas) {
 
   t.windowResized(() => {
     t.resizeCanvas(window.innerWidth, window.innerHeight);
+    if (still) t.redraw();
   });
 }

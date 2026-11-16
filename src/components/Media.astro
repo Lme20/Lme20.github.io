@@ -1,12 +1,27 @@
 ---
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
 interface Props {
-  src: string;
+  src: ImageMetadata;
   alt: string;
   video?: string;
   ratio?: string; // omit to keep the natural size
+  sizes?: string; // how wide the image is shown, so the browser picks a fitting file
 }
 
-const { src, alt, video, ratio } = Astro.props;
+const {
+  src,
+  alt,
+  video,
+  ratio,
+  sizes = "(max-width: 768px) 100vw, 400px",
+} = Astro.props;
+
+// Videos need a plain URL for their poster frame
+const poster = video
+  ? await getImage({ src, width: Math.min(800, src.width), format: "webp" })
+  : undefined;
 ---
 
 <span
@@ -17,7 +32,7 @@ const { src, alt, video, ratio } = Astro.props;
     video ? (
       <video
         src={video}
-        poster={src}
+        poster={poster?.src}
         muted
         loop
         playsinline
@@ -25,7 +40,13 @@ const { src, alt, video, ratio } = Astro.props;
         aria-label={alt}
       />
     ) : (
-      <img src={src} alt={alt} loading="lazy" />
+      <Image
+        src={src}
+        alt={alt}
+        widths={[400, 800]}
+        sizes={sizes}
+        loading="lazy"
+      />
     )
   }
 </span>

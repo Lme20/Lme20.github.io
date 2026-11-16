@@ -1,7 +1,7 @@
 ---
 title: "UE5 Game Prototype"
 description: "A small action game in Unreal Engine 5, built with Blueprints."
-thumbnail: "/images/ue5-game.webp"
+thumbnail: "../../assets/images/ue5-game.png"
 video: "/videos/ue5-game.mp4"
 tags: ["UE5", "blueprints", "gameplay", "UI_design"]
 date: 2022-10-16

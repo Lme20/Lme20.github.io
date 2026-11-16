@@ -11,7 +11,9 @@
 /* Monogram Extended by datagoblin (CC0), the pixel font used on
    extension.textmode.art. The files are not in the repo yet: download them
    from https://datagoblin.itch.io/monogram and put the two .ttf files in
-   public/fonts/. Until then the site falls back to the mono font. */
+   public/fonts/. Until then the site falls back to the mono font.
+   The two rules are commented out until the files exist, so every page
+   doesn't make a request that 404s. Uncomment them once the files are added.
 @font-face {
   font-family: "Monogram";
   src: url("/fonts/monogram-extended.ttf") format("truetype");
@@ -24,10 +26,11 @@
   src: url("/fonts/monogram-extended-italic.ttf") format("truetype");
   font-display: swap;
 }
+*/
 
 /* ── Base ──────────────────────────────────────────────── */
 :root {
-  /* The whole site uses the pixel font. VT323 (Google Fonts) is used until
+  /* The whole site uses the pixel font. VT323 (self-hosted, @fontsource) is used until
      Monogram is added; IBM Plex Mono is the last-resort fallback. */
   --font-display: var(--font-mono);
   --bg: #0a0a0a;

@@ -1,23 +1,22 @@
 // Home page model: a 3D model rendered by three.js off-screen and converted
 // to coloured ASCII by textmode.js, inside the #bust box.
 // Drag = rotate, scroll = zoom in, idle = slow spin.
+// Loaded on demand by index.astro when the bust is about to be seen.
 import { textmode } from "textmode.js";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const canvas = document.querySelector<HTMLCanvasElement>("#bust-canvas");
+const MODEL_URL = "/models/helios_vaporwave_bust.glb";
+const AUTO_SPIN = 0.005; // radians per frame when idle
+const DRAG_SPEED = 0.008; // radians per pixel dragged
+const DOWNSCALE = 2; // three.js renders at 1/2 size; cells are coarser anyway
+const FONT_SIZE = 8; // px per character (the reference's 8px density): smaller = more model detail
+const CAMERA_Z = 2.8; // distance to the model: smaller = model fills more of the box
+// Phones get 30 fps: at 8px ASCII cells the difference is hard to see
+const FRAME_RATE = matchMedia("(max-width: 768px)").matches ? 30 : 60;
 
-if (canvas) {
+export function start(canvas: HTMLCanvasElement) {
   const box = canvas.parentElement!; // receives the drag and scroll
-
-  // Put a .glb in /public and set its path here (e.g. "/models/tree.glb").
-  // Empty = built-in torus knot.
-  const MODEL_URL = "/models/helios_vaporwave_bust.glb";
-  const AUTO_SPIN = 0.005; // radians per frame when idle
-  const DRAG_SPEED = 0.008; // radians per pixel dragged
-  const DOWNSCALE = 2; // three.js renders at 1/2 size; cells are coarser anyway
-  const FONT_SIZE = 8; // px per character (the reference's 8px density): smaller = more model detail
-  const CAMERA_Z = 2.8; // distance to the model: smaller = model fills more of the box
 
   // ── three.js scene (never added to the page) ──
   const renderer = new THREE.WebGLRenderer();
@@ -44,18 +43,13 @@ if (canvas) {
     pivot.add(object);
   };
 
-  show(
-    new THREE.Mesh(new THREE.TorusKnotGeometry(1, 0.35, 128, 24), material),
-  );
-
-  if (MODEL_URL) {
-    new GLTFLoader().load(MODEL_URL, (gltf) => {
-      gltf.scene.traverse((o) => {
-        if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = material;
-      });
-      show(gltf.scene);
+  // No placeholder: the box stays empty until the model arrives
+  new GLTFLoader().load(MODEL_URL, (gltf) => {
+    gltf.scene.traverse((o) => {
+      if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).material = material;
     });
-  }
+    show(gltf.scene);
+  });
 
   // Match the three.js render to the box
   const resize = () => {
@@ -108,7 +102,11 @@ if (canvas) {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
 
-  const t = textmode.create({ canvas, fontSize: FONT_SIZE, frameRate: 60 });
+  const t = textmode.create({
+    canvas,
+    fontSize: FONT_SIZE,
+    frameRate: FRAME_RATE,
+  });
 
   let tex: ReturnType<typeof t.createTexture> | undefined;
 
@@ -141,4 +139,10 @@ if (canvas) {
     t.resizeCanvas(canvas.clientWidth, canvas.clientHeight);
     resize();
   });
+
+  // Stop rendering while the bust is scrolled out of view
+  new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) t.loop();
+    else t.noLoop();
+  }).observe(box);
 }

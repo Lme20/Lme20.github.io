@@ -1,9 +1,9 @@
 ---
 title: "ProcModel: Assembly-Based PCG for 3D Assets"
 description: "A descriptor-driven framework that assembles buildings and trees from modular parts."
-thumbnail: "/images/procmodel.webp"
+thumbnail: "../../assets/images/procmodel.webp"
 gallery:
-  - src: "/images/procmodel.webp"
+  - src: "../../assets/images/procmodel.webp"
     alt: "Modular building and vegetation parts on the left, procedurally assembled skyscrapers, domed buildings and trees on the right"
 tags: ["C++", "PCG", "procedural_modelling", "Python", "ERA"]
 date: 2026-06-01
