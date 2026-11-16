@@ -1,47 +1,43 @@
 ---
 import Base from "../layouts/Base.astro";
-
-import { navLinks } from "../data/nav";
 ---
 
 <Base title="Hello World" fullscreen={true}>
-  <div id="home-contact">
-    <a href="mailto:louisme.2014@gmail.com">louisme.2014@gmail.com</a>
-    <a
-      href="https://www.linkedin.com/in/louis-mercier-713657134/"
-      target="_blank"
-      rel="noopener">linkedin/louis-mercier</a
-    >
-    <a href="https://github.com/Lme20" target="_blank" rel="noopener"
-      >github/Lme20</a
-    >
-    <span>Gothenburg, Sweden</span>
-  </div>
+  <main id="hero">
+    <!-- Top-left corner, as on the original home page -->
+    <div id="home-contact">
+      <a href="mailto:louisme.2014@gmail.com">louisme.2014@gmail.com</a>
+      <a
+        href="https://www.linkedin.com/in/louis-mercier-713657134/"
+        target="_blank"
+        rel="noopener">linkedin/louis-mercier</a
+      >
+      <a href="https://github.com/Lme20" target="_blank" rel="noopener"
+        >github/Lme20</a
+      >
+      <span>Gothenburg, Sweden</span>
+    </div>
 
-  <div id="home-nav">
-    {
-      navLinks
-        .filter((link) => link.href !== "/")
-        .map((link) => <a href={link.href}>[{link.label}]</a>)
-    }
-  </div>
+    <div id="welcome">
+      <p class="welcome-title">Welcome to my space</p>
+      <!-- The readable text is in .sr-only; the .scramble copies are the
+           animated, decorative version and are hidden from screen readers. -->
+      <h1 id="welcome-name">
+        <span class="sr-only">Louis Mercier</span>
+        <span class="scramble" aria-hidden="true">LOUIS</span>
+        <span class="scramble" aria-hidden="true">MERCIER</span>
+      </h1>
+      <p class="welcome-sub">
+        <span class="sr-only">Software & Tools Developer</span>
+        <span class="scramble" aria-hidden="true">Software & Tools Developer</span>
+      </p>
+      <p class="welcome-caption">I build things that should exist.</p>
+    </div>
 
-  <div id="welcome">
-    <p class="welcome-title">Welcome to my space</p>
-    <pre
-      id="welcome-name">{`
-██╗      ██████╗ ██╗   ██╗██╗███████╗    ███╗   ███╗███████╗██████╗  ██████╗██╗███████╗██████╗ 
-██║     ██╔═══██╗██║   ██║██║██╔════╝    ████╗ ████║██╔════╝██╔══██╗██╔════╝██║██╔════╝██╔══██╗
-██║     ██║   ██║██║   ██║██║███████╗    ██╔████╔██║█████╗  ██████╔╝██║     ██║█████╗  ██████╔╝
-██║     ██║   ██║██║   ██║██║╚════██║    ██║╚██╔╝██║██╔══╝  ██╔══██╗██║     ██║██╔══╝  ██╔══██╗
-███████╗╚██████╔╝╚██████╔╝██║███████║    ██║ ╚═╝ ██║███████╗██║  ██║╚██████╗██║███████╗██║  ██║
-╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚══════╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝╚══════╝╚═╝  ╚═╝
-`}</pre>
-    <p class="welcome-sub">I build things that should exist.</p>
-    <p class="welcome-caption">click anywhere to see some cool effects. ☺</p>
-  </div>
-
-  <div id="ascii-canvas-container"></div>
+    <div id="bust">
+      <canvas id="bust-canvas" aria-hidden="true"></canvas>
+    </div>
+  </main>
 
   <div class="marquee">
     <div class="marquee-track">
@@ -88,184 +84,104 @@ import { navLinks } from "../data/nav";
   </div>
 
   <script>
-    import { textmode } from "textmode.js";
+    import "../scripts/home-3d"; // the bust
 
-    const t = textmode.create({
-      width: window.innerWidth,
-      height: window.innerHeight,
-      fontSize: 16,
-      frameRate: 60,
-    });
+    // ── Interactive text ──
+    // Every character of a .scramble element becomes its own element.
+    // Characters near the pointer briefly turn into random glyphs, then settle
+    // back. On load each line "decodes" from left to right.
+    const SCRAMBLE = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&$@";
+    const REACH = 2; // neighbours scrambled on each side of the pointer
 
-    // ── ripple system ──
-    interface Ripple {
-      x: number; // pixel position
-      y: number;
-      birth: number; // frameCount when created
+    type Cell = { el: HTMLSpanElement; char: string; until: number };
+
+    const active = new Set<Cell>();
+    let running = false;
+
+    function tick(now: number) {
+      for (const cell of active) {
+        if (now >= cell.until) {
+          cell.el.textContent = cell.char;
+          active.delete(cell);
+        } else {
+          cell.el.textContent =
+            SCRAMBLE[Math.floor(Math.random() * SCRAMBLE.length)];
+        }
+      }
+      if (active.size) {
+        setTimeout(() => requestAnimationFrame(tick), 40); // ~20 changes/sec
+      } else {
+        running = false;
+      }
     }
 
-    const ripples: Ripple[] = [];
-    const RIPPLE_LIFESPAN = 200; // frames before ripple fully fades
-    const RIPPLE_SPEED = 0.8; // how fast the ring expands
-    const MAX_RIPPLES = 20;
+    function scramble(cell: Cell, ms: number) {
+      if (cell.char === " ") return; // keep the letter shapes intact
+      cell.until = performance.now() + ms;
+      active.add(cell);
+      if (!running) {
+        running = true;
+        requestAnimationFrame(tick);
+      }
+    }
 
-    const PALETTE = [
-      [0, 120, 70], // deep green
-      [0, 170, 85], // --accent-dim
-      [0, 220, 150], // mint
-      [0, 255, 136], // --accent
-      [0, 120, 70], // deep green (loop back)
-    ];
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    document.addEventListener("click", (e) => {
-      if ((e.target as HTMLElement).closest("#home-nav")) return;
+    document.querySelectorAll<HTMLElement>(".scramble").forEach((host) => {
+      const cells: Cell[] = [...host.textContent!.trim()].map((char) => {
+        const el = document.createElement("span");
+        el.textContent = char;
+        return { el, char, until: 0 };
+      });
+      host.replaceChildren(...cells.map((cell) => cell.el));
 
-      ripples.push({
-        x: e.clientX,
-        y: e.clientY,
-        birth: t.frameCount,
+      host.addEventListener("pointermove", (e) => {
+        const i = cells.findIndex((cell) => cell.el === e.target);
+        if (i < 0) return;
+        for (let j = i - REACH; j <= i + REACH; j++) {
+          if (cells[j]) scramble(cells[j], 250);
+        }
       });
 
-      // Remove oldest ripple if cap is reached
-      if (ripples.length > MAX_RIPPLES) {
-        ripples.shift();
-      }
-    });
-
-    t.draw(() => {
-      t.background(10);
-
-      if (!t.grid) return;
-
-      const cols = t.grid.cols;
-      const rows = t.grid.rows;
-      const cellW = window.innerWidth / cols;
-      const cellH = window.innerHeight / rows;
-      const time = t.frameCount * 0.02;
-
-      // Remove dead ripples
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        if (t.frameCount - ripples[i].birth > RIPPLE_LIFESPAN) {
-          ripples.splice(i, 1);
-        }
-      }
-
-      // Draw each cell
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          // Pixel position of this cell's center
-          const px = (x + 0.5) * cellW;
-          const py = (y + 0.5) * cellH;
-
-          // Accumulate intensity from all active ripples
-          let totalIntensity = 0;
-
-          for (const ripple of ripples) {
-            const dx = px - ripple.x;
-            const dy = py - ripple.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            const age = t.frameCount - ripple.birth;
-            const radius = age * RIPPLE_SPEED * 3;
-            const fade = 1 - age / RIPPLE_LIFESPAN;
-
-            // Ring shape: intensity peaks near expanding radius
-            const ringDist = Math.abs(dist - radius);
-            const ringWidth = 40 + age * 0.3; // ring gets wider as it ages
-            const ringIntensity = Math.max(0, 1 - ringDist / ringWidth);
-
-            // Inner fill: faint ripple texture inside the ring
-            const innerWave =
-              dist < radius
-                ? Math.sin(dist * 0.08 - age * 0.06) * 0.3 * fade
-                : 0;
-
-            totalIntensity += ringIntensity * fade + Math.max(0, innerWave);
-          }
-
-          // background wave
-          const nx = x / cols;
-          const ny = y / rows;
-          const wave1 = Math.sin(nx * 8 + time);
-          const wave2 = Math.sin(ny * 6 + time * 1.3);
-          const wave3 = Math.sin((nx + ny) * 4 + time * 0.8);
-          const ambient = ((wave1 + wave2 + wave3) / 3 + 1) / 2; // normalize 0–1
-
-          // ambient intensity
-          totalIntensity = Math.min(1, totalIntensity + ambient * 0.25);
-
-          // Map intensity to character
-          if (totalIntensity > 0.8) {
-            t.char("█");
-          } else if (totalIntensity > 0.6) {
-            t.char("▓");
-          } else if (totalIntensity > 0.4) {
-            t.char("▒");
-          } else if (totalIntensity > 0.2) {
-            t.char("░");
-          } else if (totalIntensity > 0.1) {
-            t.char("·");
-          } else {
-            t.char(" ");
-          }
-
-          // Color led by intensity + time
-          const palettePos = (totalIntensity + time * 0.05) % 1;
-          const palIdx = palettePos * (PALETTE.length - 1);
-          const palLow = Math.floor(palIdx);
-          const palHigh = Math.min(palLow + 1, PALETTE.length - 1);
-          const blend = palIdx - palLow;
-
-          // Lerp between two adjacent palette colors
-          const cr =
-            PALETTE[palLow][0] +
-            (PALETTE[palHigh][0] - PALETTE[palLow][0]) * blend;
-          const cg =
-            PALETTE[palLow][1] +
-            (PALETTE[palHigh][1] - PALETTE[palLow][1]) * blend;
-          const cb =
-            PALETTE[palLow][2] +
-            (PALETTE[palHigh][2] - PALETTE[palLow][2]) * blend;
-
-          t.charColor(
-            Math.floor(cr * totalIntensity),
-            Math.floor(cg * totalIntensity),
-            Math.floor(cb * totalIntensity),
-          );
-
-          t.translate(x - cols / 2, y - rows / 2);
-          t.rect(1, 1);
-          t.translate(-(x - cols / 2), -(y - rows / 2));
-        }
-      }
-    });
-
-    t.windowResized(() => {
-      t.resizeCanvas(window.innerWidth, window.innerHeight);
+      // Decode-in on load, unless the visitor asked their system for less motion
+      if (!calm) cells.forEach((cell, i) => scramble(cell, 250 + i * 45));
     });
   </script>
 </Base>
 
 <style>
-  #ascii-canvas-container {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
+  /* ── Hero: text left, bust right ──────────────────────── */
+  /* No z-index here on purpose: it would wall the hero off from the waves and
+     stop the name and bust canvases from blending with them. */
+  #hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr; /* contact block, then the name */
+    gap: 1rem 2rem;
+    padding: 1rem 1.5rem 4rem;
+    min-height: calc(100dvh - 3.5rem); /* viewport minus the header */
   }
 
-  /* ── Welcome overlay ─────────────────────────────────── */
   #welcome {
-    position: fixed;
-    right: 4rem;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    text-align: right;
-    pointer-events: none;
+    align-self: center;
+  }
 
-    /* Fade in effect */
-    opacity: 0;
-    animation: fadeIn 2s ease-in 0.5s forwards;
+  /* The bust canvas is black where it is empty. "lighten" keeps whichever is
+     brighter, canvas or waves, so the black disappears and the waves show
+     through instead of a dark rectangle. */
+  #bust-canvas {
+    mix-blend-mode: lighten;
+  }
+
+  /* Present for screen readers, invisible on screen */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   @keyframes fadeIn {
@@ -275,47 +191,61 @@ import { navLinks } from "../data/nav";
   }
 
   #welcome-name {
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    line-height: 1.1;
-    color: var(--accent);
-    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 11vw, 12rem);
+    font-weight: 400; /* thin pixel strokes */
+    line-height: 0.75;
+    margin: 0.5rem 0 1rem;
+    width: max-content;
+    max-width: 100%;
+    cursor: crosshair;
+
+    /* Pink → purple → cyan gradient clipped to the characters */
+    color: #ff3d9a; /* fallback if background-clip is unsupported */
+    background: linear-gradient(90deg, #ff3d9a, #b03ad8, #3ad8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  .welcome-sub {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
-    color: var(--fg);
-    margin-top: 0.25rem;
+  /* One word per line */
+  #welcome-name .scramble {
+    display: block;
   }
 
   .welcome-title {
-    font-family: var(--font-mono);
-    font-size: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.3em;
     color: var(--fg-bright);
-    font-weight: 700;
-    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .welcome-sub {
+    font-family: var(--font-display);
+    font-size: 1.6em;
+    color: var(--fg-bright);
+    cursor: crosshair;
   }
 
   .welcome-caption {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: var(--font-display);
+    font-size: 1.1em;
     color: #a6a6a6;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     font-style: italic;
   }
 
-  /* ── Contact ────────────────────────────────────── */
+  /* ── Contact ──────────────────────────────────────────── */
   #home-contact {
-    position: fixed;
-    top: 1rem;
-    left: 1.5rem;
-    z-index: 10;
+    justify-self: start;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+    gap: 0.1rem;
+    font-family: var(--font-display);
+    font-size: 1em;
+    background: var(--bg);
+    padding: 0.5rem 0.75rem;
   }
 
   #home-contact a {
@@ -324,31 +254,33 @@ import { navLinks } from "../data/nav";
   }
 
   #home-contact a:hover {
-    color: var(--accent);
+    color: var(--fg-bright);
+    text-decoration: underline;
   }
 
   #home-contact span {
     color: var(--fg-dim);
   }
 
-  /* ── Nav ──────────────────────────────────────────────── */
-  #home-nav {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 10;
-    display: flex;
-    gap: 0.5rem;
-    font-family: var(--font-mono);
+  /* ── Bust box ─────────────────────────────────────────── */
+  #bust {
+    grid-column: 2;
+    grid-row: 1 / span 2; /* beside both the contact block and the name */
+    align-self: center;
+    position: relative;
+    height: min(70dvh, 46rem);
+    cursor: grab;
+    touch-action: none; /* let a finger drag rotate instead of scroll */
   }
 
-  #home-nav a {
-    color: var(--fg);
-    text-decoration: none;
+  #bust:active {
+    cursor: grabbing;
   }
 
-  #home-nav a:hover {
-    color: var(--accent);
+  #bust-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   /* ── Scrolling effect ─────────────────────────────────── */
@@ -359,14 +291,15 @@ import { navLinks } from "../data/nav";
     right: 0;
     z-index: 10;
     overflow: hidden;
-    padding: 0.4rem 0;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    padding: 0.3rem 0;
+    font-family: var(--font-display);
+    font-size: 0.8em; /* 16px: smaller than body text, like the original marquee */
     color: var(--fg-dim);
+    background: var(--bg);
   }
 
   .marquee-note {
-    color: var(--accent-dim);
+    color: var(--fg-bright);
   }
 
   .marquee-track {
@@ -388,49 +321,15 @@ import { navLinks } from "../data/nav";
 
   /* ── Responsive ──────────────────────────────────────── */
   @media (max-width: 768px) {
-    #home-nav {
-      top: auto;
-      bottom: 3rem;
-      right: 0;
-      left: 0;
-      justify-content: center;
-      flex-wrap: wrap;
-      font-size: 1.3rem;
-      pointer-events: none;
+    #hero {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 1.5rem 1rem 2rem;
     }
 
-    #home-nav a {
-      pointer-events: auto;
-    }
-
-    #home-contact {
-      font-size: 0.9rem;
-    }
-
-    #welcome {
-      right: 1rem;
-      left: 1rem;
-      text-align: center;
-      top: 50%;
-      bottom: auto;
-      transform: translateY(-50%);
-    }
-
-    .welcome-title {
-      font-size: 1.3rem;
-    }
-
-    #welcome-name {
-      font-size: 0.3rem;
-      overflow: hidden;
-    }
-
-    .welcome-sub {
-      font-size: 1rem;
-    }
-
-    .welcome-caption {
-      font-size: 1rem;
+    #bust {
+      grid-column: 1;
+      grid-row: auto;
+      height: 50dvh;
     }
 
     .marquee {

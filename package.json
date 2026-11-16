@@ -13,6 +13,10 @@
   },
   "dependencies": {
     "astro": "^6.0.8",
-    "textmode.js": "^0.10.0"
+    "textmode.js": "^0.10.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0"
   }
 }

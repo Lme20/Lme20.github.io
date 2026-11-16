@@ -1,5 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Cells from "../../components/Cells.astro";
+import Tags from "../../components/Tags.astro";
 import Gallery from "../../components/Gallery.astro";
 import { getCollection, render } from "astro:content";
 
@@ -13,40 +16,42 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+const { data } = project;
 ---
 
-<Base title={project.data.title} description={project.data.description}>
-  <p><a href="/projects">&lt; back to projects</a></p>
-  <br />
-  <h1>{project.data.title}</h1>
-  <span class="entry-meta">
-    {project.data.date.toISOString().slice(0, 10)}
-    {project.data.tags.map((tag) => <span class="tag">{tag} </span>)}
-  </span>
-  {
-    project.data.url && (
-      <span>
-        {" "}
-        | <a href={project.data.url}>live demo</a>
-      </span>
-    )
-  }
-  {
-    project.data.repo && (
-      <span>
-        {" "}
-        | <a href={project.data.repo}>source</a>
-      </span>
-    )
-  }
-  <br /><br />
-  <article>
-    <Content />
-  </article>
+<Base title={data.title} description={data.description}>
+  <PageHeader
+    eyebrow={`project / ${data.date.getFullYear()}`}
+    title={data.title}
+  />
 
-  {
-    project.data.gallery.length > 0 && (
-      <Gallery images={project.data.gallery} columns={3} />
-    )
-  }
+  <div class="stack">
+    <div class="panel">
+      <div class="panel-body">
+        <Tags tags={data.tags} />
+      </div>
+      <Cells
+        items={[
+          ["date", data.date.toISOString().slice(0, 10)],
+          ["role", data.role],
+          ["duration", data.duration],
+          ["team", data.team],
+          ["platform", data.platform],
+          ["contributions", data.contributions.join(" · ")],
+        ]}
+      />
+      <Cells
+        links={[
+          { label: "live demo", href: data.url, external: true },
+          { label: "source", href: data.repo, external: true },
+        ]}
+      />
+    </div>
+
+    <article class="panel panel-body">
+      <Content />
+    </article>
+
+    {data.gallery.length > 0 && <Gallery images={data.gallery} columns={3} />}
+  </div>
 </Base>

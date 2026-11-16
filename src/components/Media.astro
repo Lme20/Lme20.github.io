@@ -63,7 +63,7 @@ const { src, alt, video, ratio } = Astro.props;
   @media (hover: hover) {
     .media img,
     .media video {
-      filter: grayscale(1) contrast(1.3) brightness(0.9);
+      filter: grayscale(1) contrast(1.1);
       transition: filter 0.2s;
     }
 
@@ -74,13 +74,6 @@ const { src, alt, video, ratio } = Astro.props;
       inset: 0;
       pointer-events: none;
       transition: opacity 0.2s;
-    }
-
-    /* Green tint */
-    .media::before {
-      background: var(--accent);
-      mix-blend-mode: multiply;
-      opacity: 0.2;
     }
 
     /* Halftone dots */

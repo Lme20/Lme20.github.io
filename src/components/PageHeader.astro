@@ -1,0 +1,37 @@
+---
+// Page heading in the reference's style: a small dim line on top, then a
+// large uppercase heading. Anything in the slot (e.g. a download button)
+// sits on the right, aligned with the heading's baseline.
+interface Props {
+  eyebrow: string;
+  title: string;
+}
+
+const { eyebrow, title } = Astro.props;
+---
+
+<header class="page-head">
+  <div>
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="page-title">{title}</h1>
+  </div>
+  <slot />
+</header>
+
+<style>
+  .page-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem 2rem;
+    margin: 1rem 0 2.5rem;
+  }
+
+  .page-title {
+    margin-top: 0.5rem;
+    font-size: clamp(2.4em, 6vw, 4.4em);
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+</style>

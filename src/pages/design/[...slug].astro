@@ -1,5 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Cells from "../../components/Cells.astro";
 import Gallery from "../../components/Gallery.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -18,45 +20,27 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, description, date, gallery, tools } = entry.data;
+const { title, description, date, gallery, tools, kind } = entry.data;
 ---
 
 <Base title={title} description={description}>
-  <p><a href="/design">&lt; back to design</a></p>
-  <br />
-  <h1>{title}</h1>
-  <p>{description}</p>
+  <PageHeader eyebrow={`design / ${kind} / ${date.getFullYear()}`} title={title} />
 
-  <dl class="design-meta">
-    <dt>date</dt>
-    <dd>{date.toISOString().slice(0, 10)}</dd>
-    {
-      tools.length > 0 && (
-        <>
-          <dt>tools</dt>
-          <dd>{tools.join(", ")}</dd>
-        </>
-      )
-    }
-  </dl>
+  <div class="stack">
+    <div class="panel">
+      <p class="panel-body">{description}</p>
+      <Cells
+        items={[
+          ["date", date.toISOString().slice(0, 10)],
+          ["tools", tools.join(", ")],
+        ]}
+      />
+    </div>
 
-  <article>
-    <Content />
-  </article>
+    <article class="panel panel-body">
+      <Content />
+    </article>
 
-  <Gallery images={gallery} columns={2} />
+    <Gallery images={gallery} columns={2} />
+  </div>
 </Base>
-
-<style>
-  .design-meta {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 0.25rem 1rem;
-    margin: 1rem 0;
-    font-size: 0.875rem;
-  }
-
-  .design-meta dt {
-    color: var(--fg-dim);
-  }
-</style>

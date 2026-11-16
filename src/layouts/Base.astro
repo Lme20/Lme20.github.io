@@ -20,12 +20,15 @@ const { title, description = "", fullscreen = false } = Astro.props;
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=VT323&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    {!fullscreen && <Nav />}
+    <!-- ASCII waves behind every page; fainter behind reading pages -->
+    <canvas id="bg-waves" aria-hidden="true" data-dim={fullscreen ? 0.22 : 0.1}
+    ></canvas>
+    <Nav />
 
     {
       fullscreen ? (
@@ -36,5 +39,9 @@ const { title, description = "", fullscreen = false } = Astro.props;
         </main>
       )
     }
+
+    <script>
+      import "../scripts/home-waves";
+    </script>
   </body>
 </html>

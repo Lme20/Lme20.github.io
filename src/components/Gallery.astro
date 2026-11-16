@@ -22,17 +22,17 @@ const { images, columns = 2 } = Astro.props;
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
     gap: 1rem;
-    margin-top: 1rem;
   }
 
   .gallery-item {
     display: block;
-    border: 1px solid #333;
+    border: 1px solid var(--fg-dim);
     overflow: hidden;
+    transition: border-color 0.2s;
   }
 
   .gallery-item:hover {
-    border-color: var(--accent);
+    border-color: var(--fg-bright);
   }
 
   .gallery-item img {

@@ -1,0 +1,18 @@
+---
+// Boxed labels. Underscores in tag names are shown as spaces.
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <div class="tags">
+      {tags.map((tag) => (
+        <span class="tag">{tag.replaceAll("_", " ")}</span>
+      ))}
+    </div>
+  )
+}

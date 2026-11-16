@@ -22,6 +22,11 @@ const projects = defineCollection({
     repo: z.string().url().optional(),       
     date: z.coerce.date(),                    // string or Date
     featured: z.boolean().default(false),
+    role: z.string().optional(),
+    duration: z.string().optional(),          // "4 months"
+    team: z.number().optional(),              // team size
+    platform: z.string().optional(),          // "Windows, PlayStation 5"
+    contributions: z.array(z.string()).default([]),
   }),
 });
 

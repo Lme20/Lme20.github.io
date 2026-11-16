@@ -1,17 +1,20 @@
 ---
 import Base from "../layouts/Base.astro";
+import PageHeader from "../components/PageHeader.astro";
 ---
 
 <Base title="About Me" description="A summary about me">
-  <h1>~/about me</h1>
-  <br />
-  <p>Add stuff about me here</p>
-  <br />
-  <pre>{`
+  <PageHeader eyebrow="about / louis mercier" title="About me." />
+
+  <div class="panel panel-body">
+    <p>Add stuff about me here</p>
+    <br />
+    <pre>{`
   ╔══════════════════════════════╗
   ║   Louis Mercier              ║
   ║   louismercier@gmail.com     ║
   ║   github.com/Lme20           ║
   ╚══════════════════════════════╝
   `}</pre>
+  </div>
 </Base>

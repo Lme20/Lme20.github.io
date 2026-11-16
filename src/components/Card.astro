@@ -1,0 +1,111 @@
+---
+// Project / creation card: image, tags, title + year, description,
+// a row of detail cells and a row of link cells pinned to the bottom.
+import Media from "./Media.astro";
+import Cells from "./Cells.astro";
+import Tags from "./Tags.astro";
+
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  thumbnail?: string;
+  video?: string;
+  meta?: [string, unknown][];
+  repo?: string;
+  url?: string;
+}
+
+const {
+  href,
+  title,
+  description,
+  date,
+  tags,
+  thumbnail,
+  video,
+  meta,
+  repo,
+  url,
+} = Astro.props;
+---
+
+<div class="card panel media-host">
+  {
+    thumbnail && (
+      <a href={href} class="card-media" tabindex="-1" aria-hidden="true">
+        <Media src={thumbnail} alt="" video={video} ratio="16/9" />
+      </a>
+    )
+  }
+
+  <div class="panel-body card-body">
+    <Tags tags={tags} />
+    <div class="card-head">
+      <a href={href} class="card-title">{title}</a>
+      <span class="card-year">{date.getFullYear()}</span>
+    </div>
+    <p>{description}</p>
+  </div>
+
+  <Cells items={meta} />
+
+  <div class="card-foot">
+    <Cells
+      links={[
+        { label: "repo", href: repo, external: true },
+        { label: "live", href: url, external: true },
+        { label: "read more", href },
+      ]}
+    />
+  </div>
+</div>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--fg-bright);
+  }
+
+  .card-media {
+    display: block;
+    border-bottom: 1px solid var(--fg-dim);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .card-title {
+    color: var(--fg-bright);
+    font-size: 1.3em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .card-year {
+    color: var(--fg-dim);
+  }
+
+  /* Pins the links to the bottom, so cards in a row line up */
+  .card-foot {
+    margin-top: auto;
+  }
+</style>

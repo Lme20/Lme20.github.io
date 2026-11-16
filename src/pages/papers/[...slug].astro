@@ -1,5 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Cells from "../../components/Cells.astro";
+import Tags from "../../components/Tags.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -12,34 +15,37 @@ export async function getStaticPaths() {
 
 const { paper } = Astro.props;
 const { Content } = await render(paper);
+const { data } = paper;
 ---
 
-<Base title={paper.data.title} description={paper.data.abstract}>
-  <p><a href="/papers">&lt; back to papers</a></p>
-  <br />
-  <h1>{paper.data.title}</h1>
-  <span class="entry-meta">
-    {paper.data.date.toISOString().slice(0, 10)}
-    {paper.data.tags.map((tag) => <span class="tag">{tag} </span>)}
-  </span>
-  {
-    paper.data.pdf_url && (
-      <span>
-        {" "}
-        | <a href={paper.data.pdf_url}>PDF</a>
-      </span>
-    )
-  }
-  {
-    paper.data.repo && (
-      <span>
-        {" "}
-        | <a href={paper.data.repo}>source</a>
-      </span>
-    )
-  }
-  <br /><br />
-  <article>
-    <Content />
-  </article>
+<Base title={data.title} description={data.abstract}>
+  <PageHeader
+    eyebrow={`paper / ${data.date.getFullYear()}`}
+    title={data.title}
+  />
+
+  <div class="stack">
+    <div class="panel">
+      <div class="panel-body">
+        <Tags tags={data.tags} />
+      </div>
+      <Cells
+        items={[
+          ["date", data.date.toISOString().slice(0, 10)],
+          ["published in", data.published_in],
+          ["co-authors", data.coauthors.join(", ")],
+        ]}
+      />
+      <Cells
+        links={[
+          { label: "pdf", href: data.pdf_url, external: true },
+          { label: "source", href: data.repo, external: true },
+        ]}
+      />
+    </div>
+
+    <article class="panel panel-body">
+      <Content />
+    </article>
+  </div>
 </Base>

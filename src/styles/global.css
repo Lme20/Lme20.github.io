@@ -7,18 +7,42 @@
   box-sizing: border-box;
 }
 
+/* ── Display font ──────────────────────────────────────── */
+/* Monogram Extended by datagoblin (CC0), the pixel font used on
+   extension.textmode.art. The files are not in the repo yet: download them
+   from https://datagoblin.itch.io/monogram and put the two .ttf files in
+   public/fonts/. Until then the site falls back to the mono font. */
+@font-face {
+  font-family: "Monogram";
+  src: url("/fonts/monogram-extended.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Monogram";
+  font-style: italic;
+  src: url("/fonts/monogram-extended-italic.ttf") format("truetype");
+  font-display: swap;
+}
+
 /* ── Base ──────────────────────────────────────────────── */
 :root {
+  /* The whole site uses the pixel font. VT323 (Google Fonts) is used until
+     Monogram is added; IBM Plex Mono is the last-resort fallback. */
+  --font-display: var(--font-mono);
   --bg: #0a0a0a;
   --fg: #c0c0c0;
   --fg-bright: #ffffff;
-  --accent: #00ff88;
-  --accent-dim: #00aa55;
+  /* Taken from the home page's name gradient (was green: #00ff88 / #00aa55) */
+  --accent: #ff3d9a;
+  --accent-dim: #c060e8;
   --fg-dim: #8a8a8a; /* ~5.7:1 on --bg, passes WCAG AA */
-  --font-mono:
-    "IBM Plex Mono", "Fira Code", "JetBrains Mono", "Courier New", monospace;
+  --font-mono: "Monogram", "VT323", "IBM Plex Mono", "Courier New", monospace;
+  /* Layout sizes (rem) are measured against this, so it stays at 16px. Only
+     text is enlarged, through body's font-size below, because the pixel font
+     runs small. Text sizes use em so they follow body, not this. */
   --font-size-base: 16px;
-  --max-width: 120ch;
+  --max-width: 72rem; /* the original 120ch of IBM Plex Mono, in a font-independent unit */
 }
 
 html {
@@ -31,6 +55,7 @@ html {
 
 body {
   min-height: 100dvh;
+  font-size: 1.25rem; /* 20px text */
 }
 
 /* ── Typography ────────────────────────────────────────── */
@@ -38,20 +63,20 @@ h1,
 h2,
 h3 {
   color: var(--fg-bright);
-  font-weight: 700;
+  font-weight: 400; /* the pixel font has one weight; faked bold smears it */
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.5em;
 }
 
 h2 {
-  font-size: 1.25rem;
+  font-size: 1.25em;
   padding: 0.5rem;
 }
 
 h3 {
-  font-size: 1rem;
+  font-size: 1em;
 }
 
 a {
@@ -61,6 +86,18 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Links inside running text: white + underline, green only on hover */
+.content p a,
+.content li a {
+  color: var(--fg-bright);
+  text-decoration: underline;
+}
+
+.content p a:hover,
+.content li a:hover {
+  color: var(--accent);
 }
 
 /* ── Separators ─────────────────────────────────────────────── */
@@ -93,123 +130,163 @@ article li + li {
   margin-top: 0.25rem;
 }
 
-/* ── Year separators ───────────────────────────────────── */
-.separator {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.separator .label {
-  color: #ccc;
-  white-space: nowrap;
-}
-
-.separator .line {
-  color: #ccc;
-  overflow: hidden;
+/* ── Background waves (every page, drawn by scripts/home-waves.ts) ── */
+#bg-waves {
+  position: fixed;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 /* ── Content container ─────────────────────────────────── */
 .content {
+  position: relative; /* keeps the page above the waves */
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 4rem;
 }
 
-/* ── decorative borders ──────────────────────────── */
-.ascii-border {
-  border: 1px solid var(--fg);
-  padding: 1rem;
-}
-
-.ascii-border::before {
-  content: "┌" attr(data-title) "┐";
-  display: block;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
-}
-
-/* ── Card items ────────── */
-.entry {
-  padding: 1rem;
-  border: 1px solid #00ff88;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-}
-
-.entry:last-child {
-  // border-bottom: none;
-}
-
-.entry-title {
-  color: var(--fg-bright);
-}
-
-.entry-meta {
+/* ── Small labels ──────────────────────────────────────── */
+/* The dim uppercase line above headings, e.g. "PROJECTS / 6 ENTRIES" */
+.eyebrow {
   color: var(--fg-dim);
-  font-size: 0.875rem;
-  display: block;
-  margin-top: 0.5rem;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.tag {
-  color: var(--accent-dim);
+/* Year headings on the design and creations pages: label over a rule */
+.year-rule {
+  margin: 2.5rem 0 1rem;
+  padding: 0 0 0.4rem;
+  border-bottom: 1px solid var(--fg-dim);
+  color: var(--fg-dim);
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
 }
 
-.tag::before {
-  content: "#";
-}
-
-.entry-thumbnail {
-  margin-top: 0.5rem;
-  max-width: 100%;
-  height: auto;
-}
-
-.sub-entry {
-  border-left: 1px solid #333;
-  padding-left: 1.5rem;
-  margin-left: 1rem;
-  margin-top: 0.75rem;
-}
-
-.sub-entry h5 {
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.sub-entry p {
-  margin-top: 0.25rem;
-}
-
-/* ── Grids ─────────────────────────────────────────────── */
-.grid-container {
-  display: grid;
-  grid-template-columns: 65% 35%;
+/* Small dim note, right-aligned */
+.footnote {
   margin-top: 1.5rem;
+  color: var(--fg-dim);
+  font-size: 0.75em;
+  text-align: right;
 }
 
-/* ── CV page ───────────────────────────────────────────── */
-.cv-header {
+/* ── Panels ────────────────────────────────────────────── */
+/* Square box with a solid background, so the waves stop at its edge */
+.panel {
+  border: 1px solid var(--fg-dim);
+  background: var(--bg);
+}
+
+/* Label bar at the top of a panel */
+.panel-title {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--fg-dim);
+  color: var(--fg-dim);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.panel-body {
+  padding: 1rem;
+}
+
+/* Panels stacked with a gap */
+.stack {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Two-up grid of cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr));
+  gap: 1.5rem;
+}
+
+/* ── Cells (components/Cells.astro) ────────────────────── */
+/* Each cell draws its own top and left line and is pulled 1px up and left,
+   so neighbouring lines overlap into one; overflow hides the outer ones. */
+.cells {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  border-top: 1px solid var(--fg-dim);
+}
+
+.cell {
+  flex: 1 1 12rem;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin: -1px 0 0 -1px;
+  padding: 0.55rem 1rem;
+  border-top: 1px solid var(--fg-dim);
+  border-left: 1px solid var(--fg-dim);
 }
 
-.cv-download {
-  font-size: 0.85rem;
-  color: var(--accent);
+.cell-wide {
+  flex-basis: 100%;
 }
 
-/* ── Responsive ─────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .entry-thumbnail {
-    max-width: 100%;
-  }
+.cell-label {
+  color: var(--fg-dim);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.cell-value {
+  color: var(--fg-bright);
+  text-align: right;
+}
+
+/* Link cells and buttons: white text, inverted on hover */
+.cell-link,
+.button {
+  justify-content: center;
+  color: var(--fg-bright);
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--fg-dim);
+  background: var(--bg);
+}
+
+.cell-link:hover,
+.button:hover {
+  background: var(--fg-bright);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+/* ── Tags (components/Tags.astro) ──────────────────────── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  padding: 0 0.6ch;
+  border: 1px solid var(--fg-dim);
+  color: var(--fg);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
 }

@@ -1,5 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Cells from "../../components/Cells.astro";
+import Tags from "../../components/Tags.astro";
 import { getCollection } from "astro:content";
 
 const papers = (await getCollection("papers")).sort(
@@ -8,29 +11,47 @@ const papers = (await getCollection("papers")).sort(
 ---
 
 <Base title="Papers" description="Things I've written">
-  <h1>~/papers</h1>
-  <br />
-  {
-    papers.map((paper) => (
-      <div class="entry">
-        <a
-          href={paper.data.url ?? `/papers/${paper.id}`}
-          target={paper.data.url ? "_blank" : undefined}
-          rel={paper.data.url ? "noopener" : undefined}
-          class="entry-title"
-        >
-          &gt; {paper.data.title}
-        </a>
-        <span class="entry-meta">
-          {paper.data.date.toISOString().slice(0, 10)}
-          {" | "}
-          {paper.data.tags.map((tag) => (
-            <span class="tag">{tag} </span>
-          ))}
-        </span>
-      </div>
-    ))
-  }
+  <PageHeader
+    eyebrow={`papers / ${papers.length} entries`}
+    title="Things I've written."
+  />
+
+  <div class="stack">
+    {
+      papers.map(({ id, data }) => {
+        const href = data.url ?? `/papers/${id}`;
+        return (
+          <div class="panel">
+            <div class="panel-body paper-body">
+              <Tags tags={data.tags} />
+              <a
+                href={href}
+                target={data.url ? "_blank" : undefined}
+                rel={data.url ? "noopener" : undefined}
+                class="paper-title"
+              >
+                {data.title}
+              </a>
+            </div>
+            <Cells
+              items={[
+                ["date", data.date.toISOString().slice(0, 10)],
+                ["published in", data.published_in],
+                ["co-authors", data.coauthors.join(", ")],
+              ]}
+            />
+            <Cells
+              links={[
+                { label: "pdf", href: data.pdf_url, external: true },
+                { label: "source", href: data.repo, external: true },
+                { label: "read", href, external: Boolean(data.url) },
+              ]}
+            />
+          </div>
+        );
+      })
+    }
+  </div>
 
   {
     papers.length === 0 && (
@@ -38,3 +59,18 @@ const papers = (await getCollection("papers")).sort(
     )
   }
 </Base>
+
+<style>
+  .paper-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .paper-title {
+    color: var(--fg-bright);
+    font-size: 1.3em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+</style>

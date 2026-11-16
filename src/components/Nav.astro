@@ -1,46 +1,144 @@
 ---
 import { isActive, navLinks } from "../data/nav";
 const currentPath = Astro.url.pathname;
+
+// "/projects/kudzu" → home / projects / kudzu, each part linking to its page
+const segments = currentPath.split("/").filter(Boolean);
+const crumbs = [
+  { label: "home", href: "/" },
+  ...segments.map((segment, i) => {
+    const href = "/" + segments.slice(0, i + 1).join("/");
+    return {
+      href,
+      // Use the nav's own wording where there is one ("/me" → "about me")
+      label:
+        navLinks.find((link) => link.href === href)?.label ??
+        decodeURIComponent(segment).replaceAll("-", " "),
+    };
+  }),
+];
 ---
 
-<nav class="nav">
-  <span class="nav-prompt">$</span>
-  {
-    navLinks.map((link) => (
-      <a
-        href={link.href}
-        class:list={["nav-link", { active: isActive(link.href, currentPath) }]}
-        aria-current={isActive(link.href, currentPath) ? "page" : undefined}
-      >
-        [{link.label}]
-      </a>
-    ))
-  }
-</nav>
+<header class="site-header">
+  <div class="bar">
+    <nav class="path" aria-label="Breadcrumb">
+      {
+        crumbs.map((crumb, i) => (
+          <Fragment>
+            {i > 0 && <span aria-hidden="true">/</span>}
+            {i === crumbs.length - 1 ? (
+              <span aria-current="page">{crumb.label}</span>
+            ) : (
+              <a href={crumb.href}>{crumb.label}</a>
+            )}
+          </Fragment>
+        ))
+      }
+    </nav>
+    <nav class="nav" aria-label="Main">
+      {
+        navLinks
+          .filter((link) => link.href !== "/")
+          .map((link) => (
+            <a
+              href={link.href}
+              class:list={{ active: isActive(link.href, currentPath) }}
+              aria-current={
+                isActive(link.href, currentPath) ? "page" : undefined
+              }
+            >
+              {link.label}
+            </a>
+          ))
+      }
+    </nav>
+  </div>
+</header>
 
 <style>
-  .nav {
-    padding: 1rem;
+  .site-header {
+    position: relative;
+    z-index: 10;
+    background: var(--bg);
+    font-family: var(--font-display);
+    font-size: 0.8em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    /* The only outline: between the header and the page below it */
     border-bottom: 1px solid #333;
+  }
+
+  /* Path on the left, page links on the right, both centred on one line */
+  .bar {
     display: flex;
-    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+
+  .site-header a {
+    text-decoration: none;
+  }
+
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .nav a {
+    display: flex;
+    align-items: center;
+    padding: 1.375rem 1.1rem; /* the vertical padding sets the header's height */
+    color: var(--fg);
+    transition:
+      color 0.15s,
+      background 0.15s;
+  }
+
+  .nav a:hover {
+    color: var(--fg-bright);
+    background: #1a1a1a;
+  }
+
+  /* Current page: inverted cell */
+  .nav a.active {
+    color: var(--bg);
+    background: var(--fg-bright);
+  }
+
+  .path {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: 0.75ch;
+    padding: 0 1.25rem;
+    color: var(--fg-dim);
   }
 
-  .nav-prompt {
-    color: var(--accent);
-    margin-right: 0.25rem;
+  .path a {
+    color: var(--fg-dim);
   }
 
-  .nav-link {
+  .path a:hover {
+    color: var(--fg-bright);
+  }
+
+  .path [aria-current] {
     color: var(--fg);
-    text-decoration: none;
-    transition: color 0.15s;
   }
 
-  .nav-link:hover,
-  .nav-link.active {
-    color: var(--accent);
+  @media (max-width: 768px) {
+    .bar {
+      flex-direction: column;
+    }
+
+    .path {
+      padding: 0.6rem 0.9rem 0;
+    }
+
+    .nav a {
+      padding: 0.6rem 0.9rem;
+    }
   }
 </style>

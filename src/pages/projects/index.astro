@@ -1,71 +1,44 @@
 ---
 import Base from "../../layouts/Base.astro";
-import Media from "../../components/Media.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Card from "../../components/Card.astro";
 import { getCollection } from "astro:content";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
-
-const byYear = new Map<number, typeof projects>();
-for (const project of projects) {
-  const year = project.data.date.getFullYear();
-  if (!byYear.has(year)) byYear.set(year, []);
-  byYear.get(year)!.push(project);
-}
 ---
 
 <Base title="Projects" description="Things I've built">
-  <h1>~/projects</h1>
+  <PageHeader
+    eyebrow={`projects / ${projects.length} entries`}
+    title="Things I've built."
+  />
 
-  {
-    [...byYear.entries()].map(([year, items]) => (
-      <section>
-        <div class="separator">
-          <span class="label">~{year}</span>
-          <span class="line">{"❯".repeat(100)}</span>
-        </div>
-        <div class="grid-projects">
-          {items.map((project) => (
-            <div class="entry media-host">
-              <a href={`/projects/${project.id}`} class="entry-title">
-                &gt; {project.data.title}
-              </a>
-              <p>{project.data.description}</p>
-              {project.data.thumbnail && (
-                <div class="entry-media">
-                  <Media
-                    src={project.data.thumbnail}
-                    alt=""
-                    video={project.data.video}
-                  />
-                </div>
-              )}
-              <span class="entry-meta">
-                {project.data.tags.map((tag) => (
-                  <span class="tag">{tag} </span>
-                ))}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-    ))
-  }
+  <div class="card-grid">
+    {
+      projects.map(({ id, data }) => (
+        <Card
+          href={`/projects/${id}`}
+          title={data.title}
+          description={data.description}
+          date={data.date}
+          tags={data.tags}
+          thumbnail={data.thumbnail}
+          video={data.video}
+          repo={data.repo}
+          url={data.url}
+          meta={[
+            ["contributions", data.contributions.join(" · ")],
+            ["role", data.role],
+            ["duration", data.duration],
+            ["team", data.team],
+            ["platform", data.platform],
+          ]}
+        />
+      ))
+    }
+  </div>
 
   {projects.length === 0 && <p>No projects yet.</p>}
 </Base>
-
-<style>
-  .grid-projects {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .entry-media {
-    margin-top: 0.5rem;
-    border: 1px solid #333;
-  }
-</style>

@@ -1,0 +1,45 @@
+---
+// A row of cells divided by thin lines, like the reference's
+// "DENSITY | 8PX" control bar. Two kinds:
+//   items: label on the left, value on the right; empty values are skipped
+//   links: whole cell is a link that turns white on hover
+// Renders nothing when there is nothing to show.
+interface Link {
+  label: string;
+  href?: string;
+  external?: boolean;
+}
+
+interface Props {
+  items?: [string, unknown][];
+  links?: Link[];
+}
+
+const items = (Astro.props.items ?? []).filter(
+  ([, value]) => value !== undefined && value !== null && value !== "",
+);
+const links = (Astro.props.links ?? []).filter((link) => link.href);
+---
+
+{
+  (items.length > 0 || links.length > 0) && (
+    <div class="cells">
+      {items.map(([label, value]) => (
+        <div class:list={["cell", { "cell-wide": String(value).length > 32 }]}>
+          <span class="cell-label">{label}</span>
+          <span class="cell-value">{value}</span>
+        </div>
+      ))}
+      {links.map((link) => (
+        <a
+          class="cell cell-link"
+          href={link.href}
+          target={link.external ? "_blank" : undefined}
+          rel={link.external ? "noopener" : undefined}
+        >
+          {link.label} {link.external ? "↗" : "→"}
+        </a>
+      ))}
+    </div>
+  )
+}
